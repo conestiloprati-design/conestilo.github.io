@@ -80,15 +80,15 @@ h1{
 
   background:white;
 
-  width:300px;
+  width:260px;
 
-  border-radius:10px;
+  border-radius:15px;
 
   overflow:hidden;
 
   text-align:center;
 
-  box-shadow:0 4px 10px rgba(0,0,0,0.4);
+  box-shadow:0 4px 10px rgba(0,0,0,0.3);
 
   padding-bottom:20px;
 }
