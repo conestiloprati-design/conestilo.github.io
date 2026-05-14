@@ -63,32 +63,17 @@ h1{
   padding:40px;
 }
 
-.productos{
-
-  display:flex;
-
-  flex-wrap:wrap;
-
-  justify-content:center;
-
-  gap:20px;
-
-  padding:30px;
-}
-
 .producto{
 
   background:white;
 
-  width:260px;
-
-  border-radius:15px;
+  border-radius:20px;
 
   overflow:hidden;
 
   text-align:center;
 
-  box-shadow:0 4px 10px rgba(0,0,0,0.3);
+  box-shadow:0 4px 15px rgba(0,0,0,0.3);
 
   padding-bottom:20px;
 }
