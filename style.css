@@ -63,17 +63,34 @@ h1{
   padding:40px;
 }
 
-.producto{
+.productos{
 
-  display:grid;
+  display:flex;
 
-  grid-template-columns:repeat(auto-fit,minmax(250px,250px));
+  flex-wrap:wrap;
 
   justify-content:center;
 
-  gap:30px;
+  gap:20px;
 
-  padding:40px;
+  padding:30px;
+}
+
+.producto{
+
+  background:white;
+
+  width:260px;
+
+  border-radius:15px;
+
+  overflow:hidden;
+
+  text-align:center;
+
+  box-shadow:0 4px 10px rgba(0,0,0,0.3);
+
+  padding-bottom:20px;
 }
 
 .producto img{
