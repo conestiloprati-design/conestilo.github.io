@@ -222,3 +222,23 @@ footer{
 
   padding:20px;
 }
+
+.disponible{
+
+  color:green;
+
+  font-weight:bold;
+
+  font-size:18px;
+}
+
+.agotado{
+
+  color:red;
+
+  font-weight:bold;
+
+  font-size:18px;
+}
+
+
