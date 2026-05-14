@@ -1,0 +1,224 @@
+body{
+
+  margin:0;
+
+  font-family:Arial;
+
+  background-image:url('imagenes/fondo.jpg');
+
+  background-size:cover;
+
+  background-position:center;
+
+  background-attachment:fixed;
+}
+
+
+
+/* HEADER */
+
+.banner{
+
+  background:rgba(0,0,0,0.7);
+
+  color:white;
+
+  text-align:center;
+
+  padding:40px;
+}
+
+.logo{
+
+  width:140px;
+
+  border-radius:50%;
+}
+
+
+
+/* TITULOS */
+
+h1{
+
+  text-align:center;
+
+  color:white;
+}
+
+
+
+/* PRODUCTOS DESTACADOS */
+
+.contenedor-productos{
+
+  display:grid;
+
+  grid-template-columns:repeat(auto-fit,minmax(250px,250px));
+
+  justify-content:center;
+
+  gap:30px;
+
+  padding:40px;
+}
+
+.producto{
+
+  background:white;
+
+  border-radius:20px;
+
+  overflow:hidden;
+
+  text-align:center;
+
+  box-shadow:0 4px 15px rgba(0,0,0,0.3);
+
+  padding-bottom:20px;
+}
+
+.producto img{
+
+  width:100%;
+
+  height:250px;
+
+  object-fit:cover;
+}
+
+
+
+/* CATEGORÍAS */
+
+.categorias{
+
+  display:grid;
+
+  grid-template-columns:repeat(auto-fit,minmax(250px,250px));
+
+  justify-content:center;
+
+  gap:30px;
+
+  padding:40px;
+}
+
+.categoria{
+
+  background:white;
+
+  border-radius:20px;
+
+  overflow:hidden;
+
+  text-align:center;
+
+  box-shadow:0 4px 15px rgba(0,0,0,0.3);
+
+  padding-bottom:20px;
+}
+
+.categoria img{
+
+  width:100%;
+
+  height:250px;
+
+  object-fit:cover;
+}
+
+
+
+/* BOTONES */
+
+button{
+
+  background:#25D366;
+
+  color:white;
+
+  border:none;
+
+  padding:12px 20px;
+
+  border-radius:10px;
+
+  cursor:pointer;
+
+  font-size:16px;
+}
+
+
+
+/* MAPA */
+
+.mapa{
+
+  padding:40px;
+
+  text-align:center;
+}
+
+.mapa iframe{
+
+  width:90%;
+
+  height:400px;
+
+  border:none;
+
+  border-radius:20px;
+}
+
+
+
+/* REDES */
+
+.redes{
+
+  text-align:center;
+
+  padding:40px;
+}
+
+.sociales{
+
+  display:flex;
+
+  justify-content:center;
+
+  gap:20px;
+
+  flex-wrap:wrap;
+}
+
+.sociales a{
+
+  background:white;
+
+  padding:15px 25px;
+
+  border-radius:10px;
+
+  text-decoration:none;
+
+  color:black;
+
+  font-weight:bold;
+}
+
+
+
+/* FOOTER */
+
+footer{
+
+  background:rgba(0,0,0,0.7);
+
+  color:white;
+
+  text-align:center;
+
+  padding:20px;
+}
