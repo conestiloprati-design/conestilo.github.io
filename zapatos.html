@@ -1,0 +1,75 @@
+<!DOCTYPE html><html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zapatos | Co'n Estilo</title>
+    <link rel="icon" href="imagenes/logo.png">
+    <link rel="stylesheet" href="zapatos.css">
+</head>
+<body>
+<header class="banner">
+    <img src="imagenes/logo.png" class="logo">
+    <h1>Zapatos</h1>
+    <p>Encuentra los mejores estilos</p>
+</header>
+
+
+<section class="contenedor-productos">
+
+    <div class="producto">
+        <img src="imagenes/zapato1.jpg">
+        <h2>Zapato Deportivo</h2>
+        <p class="precio">$40</p>
+        <p class="disponible">            Disponible        </p>
+        <button onclick="comprar('Zapato Deportivo','$40')">            Comprar        </button>
+    </div>
+
+
+    <div class="producto">
+        <img src="imagenes/zapato2.jpg">
+        <h2>Zapato Elegante</h2>
+        <p class="precio">$55</p>
+        <p class="disponible">            Disponible        </p>
+        <button onclick="comprar('Zapato Elegante','$55')">            Comprar        </button>
+    </div>
+
+
+    <div class="producto">
+        <img src="imagenes/zapato3.jpg">
+        <h2>Zapato Negro</h2>
+        <p class="precio">$48</p>
+        <p class="agotado">            Agotado        </p>
+        <button disabled>            Agotado        </button>
+    </div>
+
+
+    <div class="producto">
+        <img src="imagenes/zapato4.jpg">
+        <h2>Zapato Casual</h2>
+        <p class="precio">$37</p>
+        <p class="disponible">            Disponible        </p>
+        <button onclick="comprar('Zapato Casual','$37')">            Comprar        </button>
+    </div>
+</section>
+
+
+<div class="volver">
+    <a href="index.html">
+        <button>            ⬅ Volver al inicio        </button>
+    </a>
+</div>
+
+
+<footer>
+    © 2026 Co'n Estilo
+</footer>
+
+
+<script>
+function comprar(producto,precio){
+    const telefono='5355555555';
+    const mensaje=    `Hola, quiero comprar ${producto} con precio ${precio}`;
+    const url=    `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+    window.open(url,'_blank');}
+</script>
+</body></html>
