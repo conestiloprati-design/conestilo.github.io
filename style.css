@@ -80,7 +80,7 @@ h1{
 
   background:white;
 
-  width:260px;
+  width:300px;
 
   border-radius:10px;
 
@@ -88,7 +88,7 @@ h1{
 
   text-align:center;
 
-  box-shadow:0 4px 10px rgba(0,0,0,0.3);
+  box-shadow:0 4px 10px rgba(0,0,0,0.4);
 
   padding-bottom:20px;
 }
