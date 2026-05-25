@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tienda</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #f6f6f6;
+}
+
+h2 {
+  padding: 10px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 10px;
+}
+
+.card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+
+.card h3 {
+  margin: 5px;
+  font-size: 16px;
+}
+
+.precio {
+  color: #000;
+  font-weight: bold;
+}
+
+.agotado {
+  color: red;
+  font-weight: bold;
+}
+
+.btn {
+  display: block;
+  background: black;
+  color: white;
+  padding: 8px;
+  text-align: center;
+  text-decoration: none;
+  margin: 10px;
+  border-radius: 10px;
+}
+</style>
+
+</head>
+<body>
+
+<h2>Categorías</h2>
+<div id="categorias" class="grid"></div>
+
+<h2>🔥 Ofertas</h2>
+<div id="descuentos" class="grid"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<script>
+const supabase = window.supabase.createClient("https://fypjfxwcruzmbrvoijwg.supabase.co","Alain.9212conestilo");
+
+async function cargarCategorias() {
+  const { data } = await supabase.from("categorias").select("*");
+
+  categorias.innerHTML = "";
+  data.forEach(c => {
+    categorias.innerHTML += `
+      <a href="categoria.html?id=${c.id}">
+        <div class="card"><h3>${c.nombre}</h3></div>
+      </a>
+    `;
+  });
+}
+
+async function cargarDescuentos() {
+  const { data } = await supabase
+    .from("productos")
+    .select("*")
+    .eq("en_descuento", true);
+
+  descuentos.innerHTML = "";
+
+  data.forEach(p => {
+    descuentos.innerHTML += `
+      <div class="card">
+        <img src="${p.imagen}">
+        <h3>${p.nombre}</h3>
+
+        ${
+          p.stock
+          ? `<p class="precio">$${p.precio}</p>
+             <a class="btn" href="https://wa.me/XXXXXXXX?text=Quiero ${p.nombre}">Comprar</a>`
+          : `<p class="agotado">AGOTADO</p>`
+        }
+      </div>
+    `;
+  });
+}
+
+cargarCategorias();
+cargarDescuentos();
+</script>
+
+</body>
+</html>

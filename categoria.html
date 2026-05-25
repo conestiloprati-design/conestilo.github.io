@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Categoría</title>
+</head>
+
+<body>
+
+<h2>Productos</h2>
+<div id="productos" class="grid"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<script>
+const supabase = window.supabase.createClient("https://fypjfxwcruzmbrvoijwg.supabase.co","Alain.9212conestilo");
+
+const id = new URLSearchParams(location.search).get("id");
+
+async function cargar() {
+  const { data } = await supabase
+    .from("productos")
+    .select("*")
+    .eq("categoria_id", id);
+
+  productos.innerHTML = "";
+
+  data.forEach(p => {
+    productos.innerHTML += `
+      <div class="card">
+        <img src="${p.imagen}">
+        <h3>${p.nombre}</h3>
+
+        ${
+          p.stock
+          ? `<p>$${p.precio}</p>
+             <a href="https://wa.me/XXXXXXXX?text=Quiero ${p.nombre}">Comprar</a>`
+          : `<p style="color:red">AGOTADO</p>`
+        }
+      </div>
+    `;
+  });
+}
+
+cargar();
+</script>
+
+</body>
+</html>
