@@ -28,7 +28,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <script>
-const supabase = window.supabase.createClient("https://fypjfxwcruzmbrvoijwg.supabase.co","fypjfxwcruzmbrvoijwg");
+const supabase = window.supabase.createClient("https://fypjfxwcruzmbrvoijwg.supabase.co","sb_publishable_n_uQGLyDg5sgMgBRBvYdng_IqpQeX1L");
 
 async function loadCat() {
   const { data } = await supabase.from("categorias").select("*");
