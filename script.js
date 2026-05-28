@@ -2,8 +2,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 // 🔴 PON TUS DATOS AQUÍ
 const supabase = createClient(
-  'https://TU_URL.supabase.co',
-  'TU_ANON_KEY'
+  'https://fypjfxwcruzmbrvoijwg.supabase.co',
+  'sb_publishable_n_uQGLyDg5sgMgBRBvYdng_IqpQeX1L'
 )
 
 // 📦 CARGAR PRODUCTOS
