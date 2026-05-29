@@ -3,12 +3,17 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 // 🔴 PON TUS DATOS AQUÍ
 const supabase = createClient(
   'https://fypjfxwcruzmbrvoijwg.supabase.co',
-  'sb_publishable_n_uQGLyDg5sgMgBRBvYdng_IqpQeX1L'
+  'sb_publishable_n_uQGLyDg5sgMgBRBvYdng_IqpQeX1L' // Usa tu anon key aquí
 )
 
 // 📦 CARGAR PRODUCTOS
 async function cargarProductos() {
-  const { data } = await supabase.from('productos').select('*')
+  const { data, error } = await supabase.from('productos').select('*')
+
+  if (error) {
+    console.error('Error cargando productos:', error.message)
+    return
+  }
 
   const contenedor = document.getElementById('productos')
   contenedor.innerHTML = ''
@@ -30,13 +35,18 @@ async function cargarProductos() {
 // ➕ AGREGAR PRODUCTO
 window.agregarProducto = async function() {
   const nombre = document.getElementById('nombre').value
-  const precio = parseFloat(document.getElementById('precio').value)
+  const precio = parseFloat(document.getElementById('precio').value) || 0
   const imagen = document.getElementById('imagen').value
   const categoria = document.getElementById('categoria').value
 
-  await supabase.from('productos').insert([
+  const { error } = await supabase.from('productos').insert([
     { nombre, precio, imagen, categoria }
   ])
+
+  if (error) {
+    console.error('Error insertando producto:', error.message)
+    return
+  }
 
   cargarProductos()
   cargarCategorias()
@@ -44,7 +54,12 @@ window.agregarProducto = async function() {
 
 // 🏷️ CARGAR CATEGORÍAS
 async function cargarCategorias() {
-  const { data } = await supabase.from('productos').select('categoria')
+  const { data, error } = await supabase.from('productos').select('categoria')
+
+  if (error) {
+    console.error('Error cargando categorías:', error.message)
+    return
+  }
 
   const categoriasUnicas = [...new Set(data.map(p => p.categoria))]
 
@@ -58,10 +73,15 @@ async function cargarCategorias() {
 
 // 🔍 FILTRAR
 window.filtrar = async function(cat) {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('productos')
     .select('*')
     .eq('categoria', cat)
+
+  if (error) {
+    console.error('Error filtrando productos:', error.message)
+    return
+  }
 
   const contenedor = document.getElementById('productos')
   contenedor.innerHTML = ''
