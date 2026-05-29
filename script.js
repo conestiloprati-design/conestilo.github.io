@@ -1,4 +1,4 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm install @supabase/supabase-js @supabase/ssr'
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 // 🔴 PON TUS DATOS AQUÍ
 const supabase = createClient(
