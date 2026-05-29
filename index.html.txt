@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi Tienda - Principal</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <script type="module" src="js/productos.js"></script>
+  <script type="module" src="js/categorias.js"></script>
+  <script type="module" src="js/descuentos.js"></script>
+</head>
+<body>
+  <h1>Bienvenido a Mi Tienda</h1>
+
+  <section id="descuentos">
+    <h2>Productos en Descuento</h2>
+    <div id="lista-descuentos"></div>
+  </section>
+
+  <section id="categorias">
+    <h2>Categorías</h2>
+    <!-- Botones de categorías se cargan aquí -->
+  </section>
+
+  <section id="productos">
+    <h2>Todos los Productos</h2>
+    <!-- Productos se cargan aquí -->
+  </section>
+
+  <script type="module">
+    import { cargarProductos } from './js/productos.js'
+    import { cargarCategorias } from './js/categorias.js'
+    import { cargarDescuentos } from './js/descuentos.js'
+
+    async function init() {
+      const productos = await cargarProductos()
+      const categorias = await cargarCategorias()
+      const descuentos = await cargarDescuentos()
+
+      // Renderizar productos
+      const contProd = document.getElementById('productos')
+      productos.forEach(p => {
+        contProd.innerHTML += `<div><h3>${p.nombre}</h3><p>$${p.precio}</p></div>`
+      })
+
+      // Renderizar categorías
+      const contCat = document.getElementById('categorias')
+      categorias.forEach(c => {
+        contCat.innerHTML += `<button onclick="filtrar('${c}')">${c}</button>`
+      })
+
+      // Renderizar descuentos
+      const contDesc = document.getElementById('lista-descuentos')
+      descuentos.forEach(d => {
+        contDesc.innerHTML += `<div><h3>${d.nombre}</h3><p>Oferta: $${d.precio}</p></div>`
+      })
+    }
+    init()
+  </script>
+</body>
+</html>

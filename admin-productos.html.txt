@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Productos</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <script type="module" src="js/productos.js"></script>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Inicio</a>
+  <a href="admin-productos.html">Admin Productos</a>
+  <a href="admin-categorias.html">Admin Categorías</a>
+  <a href="admin-descuentos.html">Admin Descuentos</a>
+</nav>
+<hr>
+
+
+  <h1>Administrar Productos</h1>
+
+  <form onsubmit="agregarProducto(); return false;">
+    <input id="nombre" placeholder="Nombre">
+    <input id="precio" type="number" placeholder="Precio">
+    <input id="imagen" placeholder="URL Imagen">
+    <input id="categoria" placeholder="Categoría">
+    <button type="submit">Agregar Producto</button>
+  </form>
+
+  <div id="productos"></div>
+
+  <script type="module">
+    import { cargarProductos, eliminarProducto, actualizarEstado } from './js/productos.js'
+
+    async function render() {
+      const productos = await cargarProductos()
+      const cont = document.getElementById('productos')
+      cont.innerHTML = ''
+      productos.forEach(p => {
+        cont.innerHTML += `
+          <div>
+            <h3>${p.nombre}</h3>
+            <p>$${p.precio}</p>
+            <button onclick="eliminarProducto(${p.id})">Eliminar</button>
+            <button onclick="actualizarEstado(${p.id}, true)">Disponible</button>
+            <button onclick="actualizarEstado(${p.id}, false)">Agotado</button>
+          </div>
+        `
+      })
+    }
+    render()
+  </script>
+</body>
+</html>

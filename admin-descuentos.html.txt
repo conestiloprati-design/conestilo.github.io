@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Descuentos</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <script type="module" src="js/descuentos.js"></script>
+</head>
+<body>
+
+ <nav>
+  <a href="index.html">Inicio</a>
+  <a href="admin-productos.html">Admin Productos</a>
+  <a href="admin-categorias.html">Admin Categorías</a>
+  <a href="admin-descuentos.html">Admin Descuentos</a>
+</nav>
+<hr>
+
+
+  <h1>Administrar Descuentos</h1>
+
+  <div id="productos"></div>
+
+  <script type="module">
+    import { cargarProductos } from './js/productos.js'
+    import { agregarDescuento, quitarDescuento } from './js/descuentos.js'
+
+    async function render() {
+      const productos = await cargarProductos()
+      const cont = document.getElementById('productos')
+      cont.innerHTML = ''
+      productos.forEach(p => {
+        cont.innerHTML += `
+          <div>
+            <h3>${p.nombre}</h3>
+            <p>$${p.precio}</p>
+            <button onclick="agregarDescuento(${p.id})">Marcar en descuento</button>
+            <button onclick="quitarDescuento(${p.id})">Quitar descuento</button>
+          </div>
+        `
+      })
+    }
+    render()
+  </script>
+</body>
+</html>

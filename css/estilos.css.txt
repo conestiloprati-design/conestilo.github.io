@@ -1,0 +1,19 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+h1, h2 {
+  color: #333;
+}
+
+.producto, div {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 5px;
+}
+
+button {
+  margin: 5px;
+  padding: 5px 10px;
+}
