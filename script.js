@@ -2,8 +2,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 // 🔴 PON TUS DATOS AQUÍ
 const supabase = createClient(
-  'NEXT_PUBLIC_SUPABASE_URL=https://fypjfxwcruzmbrvoijwg.supabase.co',
-  'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_n_uQGLyDg5sgMgBRBvYdng_IqpQeX1L'
+  'https://fypjfxwcruzmbrvoijwg.supabase.co',
+  'sb_publishable_n_uQGLyDg5sgMgBRBvYdng_IqpQeX1L'
 )
 
 // 📦 CARGAR PRODUCTOS
