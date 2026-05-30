@@ -1,1 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Admin</title>
+</head>
 
+<body>
+
+<h2>Panel Admin</h2>
+
+<input id="nombre" placeholder="Nombre">
+<input id="precio" placeholder="Precio">
+<input id="precio_desc" placeholder="Precio descuento">
+<input id="imagen" placeholder="URL imagen">
+<input id="categoria" placeholder="Categoría">
+
+<label>
+  Descuento
+  <input type="checkbox" id="descuento">
+</label>
+
+<button onclick="agregar()">Agregar</button>
+
+<h3>Productos</h3>
+<div id="lista"></div>
+
+<script type="module">
+
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+const supabase = createClient(
+  'https://fypjfxwcruzmbrvoijwg.supabase.co',
+  'sb_publishable_n_uQGLyDg5sgMgBRBvYdng_IqpQeX1L'
+)
+
+window.agregar = async function() {
+
+  await supabase.from('productos').insert([{
+    nombre: nombre.value,
+    precio: parseFloat(precio.value),
+    precio_desc: parseFloat(precio_desc.value),
+    imagen: imagen.value,
+    categoria: categoria.value,
+    descuento: descuento.checked
+  }])
+
+  cargar()
+}
+
+async function cargar() {
+
+  const { data } = await supabase.from('productos').select('*')
+
+  const cont = document.getElementById('lista')
+  cont.innerHTML = ''
+
+  data.forEach(p => {
+    cont.innerHTML += `
+      <div>
+        ${p.nombre} - $${p.precio}
+        <button onclick="eliminar('${p.id}')">❌</button>
+      </div>
+    `
+  })
+}
+
+window.eliminar = async function(id) {
+  await supabase.from('productos').delete().eq('id', id)
+  cargar()
+}
+
+cargar()
+
+</script>
+
+</body>
+</html>
