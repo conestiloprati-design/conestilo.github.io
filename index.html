@@ -2,7 +2,10 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Co'n Estilo</title>
+
+<link rel="icon" href="https://i.postimg.cc/Gp6QRtKG/IMG-20260520-174004.png">
 <link rel="stylesheet" href="css/estilos.css">
 </head>
 
@@ -10,119 +13,50 @@
 
 <header>
   <div class="logo">Co'n Estilo</div>
+
+  <nav>
+    <a href="#productos">Productos</a>
+    <a href="#categorias">Categorías</a>
+    <a href="#redes">Redes</a>
+  </nav>
 </header>
 
-<!-- 🏷️ CATEGORÍAS -->
-<section class="categorias">
+<!-- HERO -->
+<section class="hero">
+  <div class="overlay">
+    <h1>Moda con estilo</h1>
+    <p>Zapatos, ropa y accesorios modernos</p>
+    <a href="#productos" class="btn">Ver productos</a>
+  </div>
+</section>
+
+<!-- CATEGORÍAS (DINÁMICAS) -->
+<section id="categorias" class="categorias">
   <h2>Categorías</h2>
-  <div class="categoria-grid" id="categorias"></div>
+  <div class="categoria-grid" id="categoriaGrid"></div>
 </section>
 
-<!-- 🔥 DESCUENTOS -->
-<section class="productos">
-  <h2>🔥 Ofertas</h2>
-  <div class="productos-grid" id="descuentos"></div>
+<!-- PRODUCTOS EN OFERTA -->
+<section id="productos" class="productos">
+  <h2>🔥 Productos en Descuento</h2>
+  <div class="productos-grid" id="descuentosGrid"></div>
 </section>
 
-<!-- 🛍️ PRODUCTOS -->
-<section class="productos">
-  <h2 id="titulo">Productos</h2>
-  <div class="productos-grid" id="productos"></div>
-</section>
+<!-- FOOTER -->
+<footer id="redes">
+  <h3>Co'n Estilo</h3>
+  <p>Síguenos en nuestras redes sociales</p>
 
-<script type="module">
+  <div class="sociales">
+    <a href="#">Facebook</a>
+    <a href="#">Instagram</a>
+    <a href="#">TikTok</a>
+  </div>
 
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+  <p class="copy">© 2026 Co'n Estilo</p>
+</footer>
 
-const supabase = createClient(
-  'https://fypjfxwcruzmbrvoijwg.supabase.co',
-  'sb_publishable_n_uQGLyDg5sgMgBRBvYdng_IqpQeX1L'
-)
-
-let TODOS = []
-
-// 🛍️ RENDER PRODUCTOS
-function render(lista, contenedor) {
-  const cont = document.getElementById(contenedor)
-  cont.innerHTML = ''
-
-  lista.forEach(p => {
-    cont.innerHTML += `
-      <div class="producto-card">
-        <img src="${p.imagen}">
-        <h3>${p.nombre}</h3>
-
-        ${
-          p.descuento
-          ? `<p>
-              <span class="precio-viejo">$${p.precio}</span>
-              <span class="precio-nuevo">$${p.precio_desc}</span>
-            </p>`
-          : `<p>$${p.precio}</p>`
-        }
-
-        <button onclick="comprar('${p.nombre}')">Comprar</button>
-      </div>
-    `
-  })
-}
-
-// 🟢 WHATSAPP
-window.comprar = function(nombre) {
-  const numero = '5354555815'
-  const mensaje = `Hola, quiero comprar: ${nombre}`
-  window.open(`https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`)
-}
-
-// 🔥 FILTRAR
-window.filtrar = function(id, nombre) {
-  const filtrados = TODOS.filter(p => p.categoria_id == id)
-  document.getElementById('titulo').innerText = nombre
-  render(filtrados, 'productos')
-}
-
-// 🏷️ RENDER CATEGORÍAS
-function renderCategorias(lista) {
-  const cont = document.getElementById('categorias')
-  cont.innerHTML = ''
-
-  lista.forEach(c => {
-    cont.innerHTML += `
-      <div class="categoria-card" onclick="filtrar(${c.id}, '${c.nombre}')">
-        <img src="${c.imagen}">
-        <h3>${c.nombre}</h3>
-      </div>
-    `
-  })
-}
-
-// 🚀 INIT
-async function init() {
-
-  // productos con relación
-  const { data: productos } = await supabase
-    .from('productos')
-    .select('*')
-
-  const { data: categorias } = await supabase
-    .from('categorias')
-    .select('*')
-
-  TODOS = productos
-
-  const descuentos = productos.filter(p => p.descuento === true)
-
-  renderCategorias(categorias)
-  render(descuentos, 'descuentos')
-
-  if (categorias.length > 0) {
-    filtrar(categorias[0].id, categorias[0].nombre)
-  }
-}
-
-init()
-
-</script>
+<script type="module" src="script.js"></script>
 
 </body>
 </html>
