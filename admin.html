@@ -22,15 +22,9 @@ input, select, button { margin: 5px; padding: 8px; }
 
 <input id="nombre" placeholder="Nombre">
 <input id="precio" type="number" placeholder="Precio">
-<input id="precio_desc" type="number" placeholder="Precio descuento">
 <input id="imagen" placeholder="URL imagen">
 
 <select id="categoria"></select>
-
-<label>
-  Descuento
-  <input type="checkbox" id="descuento">
-</label>
 
 <button onclick="agregar()">Agregar Producto</button>
 
@@ -58,7 +52,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const supabase = createClient(
   'https://fypjfxwcruzmbrvoijwg.supabase.co',
-  'sb_publishable_n_uQGLyDg5sgMgBRBvYdng_IqpQeX1L'
+  'TU_PUBLIC_KEY_AQUI'
 )
 
 
@@ -90,19 +84,12 @@ window.agregar = async function() {
     return
   }
 
-  const data = {
+  const { error } = await supabase.from('productos').insert([{
     nombre: nombre.value,
     precio: parseFloat(precio.value),
     imagen: imagen.value,
-    categoria_id: parseInt(categoria.value),
-    descuento: descuento.checked
-  }
-
-  if (descuento.checked) {
-    data.precio_desc = parseFloat(precio_desc.value) || 0
-  }
-
-  const { error } = await supabase.from('productos').insert([data])
+    categoria_id: parseInt(categoria.value)
+  }])
 
   if (error) {
     console.error(error)
@@ -112,7 +99,10 @@ window.agregar = async function() {
 
   alert("Producto agregado")
 
-  limpiarProducto()
+  nombre.value = ''
+  precio.value = ''
+  imagen.value = ''
+
   cargar()
 }
 
@@ -148,13 +138,16 @@ window.agregarCategoria = async function() {
 }
 
 
-// ================= CARGAR PRODUCTOS =================
+// ================= CARGAR PRODUCTOS + DESCUENTOS =================
 
 async function cargar() {
 
   const { data, error } = await supabase
     .from('productos')
-    .select('*')
+    .select(`
+      *,
+      descuentos (precio_desc)
+    `)
 
   if (error) {
     console.error(error)
@@ -165,20 +158,79 @@ async function cargar() {
   cont.innerHTML = ''
 
   data.forEach(p => {
+
+    const tieneDesc = p.descuentos.length > 0
+    const precioFinal = tieneDesc ? p.descuentos[0].precio_desc : p.precio
+
     cont.innerHTML += `
       <div class="producto">
         <b>${p.nombre}</b><br>
-        Precio: $${p.precio}<br>
-        ${p.descuento ? `Descuento: $${p.precio_desc}` : ''}
+
+        ${
+          tieneDesc
+          ? `<s>$${p.precio}</s> → <b>$${precioFinal}</b>`
+          : `$${p.precio}`
+        }
+
         <br>
-        <button onclick="eliminar(${p.id})">❌ Eliminar</button>
+
+        ${
+          tieneDesc
+          ? `<button onclick="quitarDescuento(${p.id})">❌ Quitar descuento</button>`
+          : `<button onclick="ponerDescuento(${p.id})">💸 Poner descuento</button>`
+        }
+
+        <button onclick="eliminar(${p.id})">🗑 Eliminar</button>
       </div>
     `
   })
 }
 
 
-// ================= ELIMINAR =================
+// ================= PONER DESCUENTO =================
+
+window.ponerDescuento = async function(id) {
+
+  const precio_desc = prompt("Precio con descuento:")
+
+  if (!precio_desc) return
+
+  const { error } = await supabase
+    .from('descuentos')
+    .insert([{
+      producto_id: id,
+      precio_desc: parseFloat(precio_desc)
+    }])
+
+  if (error) {
+    console.error(error)
+    alert("Error: " + error.message)
+    return
+  }
+
+  cargar()
+}
+
+
+// ================= QUITAR DESCUENTO =================
+
+window.quitarDescuento = async function(id) {
+
+  const { error } = await supabase
+    .from('descuentos')
+    .delete()
+    .eq('producto_id', id)
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  cargar()
+}
+
+
+// ================= ELIMINAR PRODUCTO =================
 
 window.eliminar = async function(id) {
 
@@ -189,22 +241,10 @@ window.eliminar = async function(id) {
 
   if (error) {
     console.error(error)
-    alert("Error al eliminar")
     return
   }
 
   cargar()
-}
-
-
-// ================= LIMPIAR =================
-
-function limpiarProducto() {
-  nombre.value = ''
-  precio.value = ''
-  precio_desc.value = ''
-  imagen.value = ''
-  descuento.checked = false
 }
 
 
