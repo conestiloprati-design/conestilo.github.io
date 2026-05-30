@@ -4,107 +4,214 @@
   <meta charset="UTF-8">
   <title>Mi Tienda</title>
 
-  <!-- TU CSS -->
-  <link rel="stylesheet" href="css/estilos.css">
+  <style>
+    body {
+      font-family: Arial;
+      margin: 0;
+      background: #f5f5f5;
+    }
+
+    header {
+      background: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      border-bottom: 1px solid #ddd;
+    }
+
+    h2 {
+      margin: 20px;
+    }
+
+    /* 🔥 CATEGORÍAS ESTILO SHEIN */
+    #categorias {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      padding: 10px;
+      background: white;
+    }
+
+    #categorias button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 20px;
+      background: #eee;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: 0.3s;
+    }
+
+    #categorias button:hover {
+      background: black;
+      color: white;
+    }
+
+    .activo {
+      background: black !important;
+      color: white;
+    }
+
+    /* 🛍️ PRODUCTOS */
+    #productos {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      padding: 15px;
+    }
+
+    .producto {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: 0.3s;
+    }
+
+    .producto:hover {
+      transform: scale(1.03);
+    }
+
+    .producto img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .info {
+      padding: 10px;
+    }
+
+    .precio {
+      font-weight: bold;
+      color: #000;
+    }
+
+    .agotado {
+      color: red;
+      font-weight: bold;
+    }
+
+    /* 💥 DESCUENTOS */
+    #lista-descuentos {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .descuento {
+      min-width: 150px;
+      background: #ffecec;
+      padding: 10px;
+      border-radius: 10px;
+    }
+  </style>
+
+  <script type="module" src="js/productos.js"></script>
+  <script type="module" src="js/categorias.js"></script>
+  <script type="module" src="js/descuentos.js"></script>
 </head>
 
 <body>
 
-<header>
-  <div class="logo">Co'n Estilo</div>
-</header>
+<header>Mi Tienda</header>
 
-<!-- 🏷️ CATEGORÍAS -->
-<section class="categorias">
-  <h2>Categorías</h2>
-  <div class="categoria-grid" id="categorias"></div>
+<section>
+  <h2>🔥 Ofertas</h2>
+  <div id="lista-descuentos"></div>
 </section>
 
-<!-- 🛍️ PRODUCTOS -->
-<section class="productos">
-  <h2 id="titulo">Productos</h2>
-  <div class="productos-grid" id="productos"></div>
+<section>
+  <h2>🛒 Categorías</h2>
+  <div id="categorias"></div>
 </section>
 
-<!-- 🔥 SCRIPT TODO EN UNO (SIN IMPORTS PARA EVITAR ERRORES) -->
+<section>
+  <h2>Productos</h2>
+  <div id="productos"></div>
+</section>
+
 <script type="module">
+  import { cargarProductos } from './js/productos.js'
+  import { cargarCategorias } from './js/categorias.js'
+  import { cargarDescuentos } from './js/descuentos.js'
 
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+  let TODOS = []
 
-// 🔴 PON TUS DATOS
-const supabase = createClient(
-  'https://TU_URL.supabase.co',
-  'TU_ANON_KEY'
-)
+  function renderProductos(lista) {
+    const cont = document.getElementById('productos')
+    cont.innerHTML = ''
 
-let TODOS = []
-
-// 🛍️ MOSTRAR PRODUCTOS
-function mostrarProductos(lista) {
-  const cont = document.getElementById('productos')
-  cont.innerHTML = ''
-
-  lista.forEach(p => {
-    cont.innerHTML += `
-      <div class="producto-card">
-        <img src="${p.imagen}">
-        <h3>${p.nombre}</h3>
-        <p class="${p.precio == 0 ? 'agotado' : ''}">
-          ${p.precio == 0 ? 'Agotado' : '$' + p.precio}
-        </p>
-        <button ${p.precio == 0 ? 'disabled' : ''}>
-          Comprar
-        </button>
-      </div>
-    `
-  })
-}
-
-// 🔥 FILTRAR
-window.filtrar = function(cat) {
-  const filtrados = TODOS.filter(p => p.categoria === cat)
-  document.getElementById('titulo').innerText = cat
-  mostrarProductos(filtrados)
-}
-
-// 🏷️ MOSTRAR CATEGORÍAS
-function mostrarCategorias(lista) {
-  const cont = document.getElementById('categorias')
-  cont.innerHTML = ''
-
-  lista.forEach(c => {
-    cont.innerHTML += `
-      <div class="categoria-card" onclick="filtrar('${c}')">
-        <img src="https://picsum.photos/400/500?random=${c}">
-        <h3>${c}</h3>
-      </div>
-    `
-  })
-}
-
-// 🚀 INICIO
-async function init() {
-
-  // traer productos
-  const { data } = await supabase
-    .from('productos')
-    .select('*')
-
-  TODOS = data
-
-  // sacar categorías únicas
-  const categorias = [...new Set(data.map(p => p.categoria))]
-
-  mostrarCategorias(categorias)
-
-  // mostrar primera categoría
-  if (categorias.length > 0) {
-    filtrar(categorias[0])
+    lista.forEach(p => {
+      cont.innerHTML += `
+        <div class="producto">
+          <img src="${p.imagen}">
+          <div class="info">
+            <h4>${p.nombre}</h4>
+            <p class="${p.precio == 0 ? 'agotado' : 'precio'}">
+              ${p.precio == 0 ? 'Agotado' : '$' + p.precio}
+            </p>
+          </div>
+        </div>
+      `
+    })
   }
-}
 
-init()
+  // 🔥 FILTRAR POR CATEGORÍA
+  window.filtrar = function(cat, btn) {
 
+    // quitar activo
+    document.querySelectorAll('#categorias button')
+      .forEach(b => b.classList.remove('activo'))
+
+    btn.classList.add('activo')
+
+    if (cat === 'Todos') {
+      renderProductos(TODOS)
+    } else {
+      const filtrados = TODOS.filter(p => p.categoria === cat)
+      renderProductos(filtrados)
+    }
+  }
+
+  async function init() {
+
+    TODOS = await cargarProductos()
+    const categorias = await cargarCategorias()
+    const descuentos = await cargarDescuentos()
+
+    // 🛍️ Productos inicial
+    renderProductos(TODOS)
+
+    // 🏷️ Categorías
+    const contCat = document.getElementById('categorias')
+
+    contCat.innerHTML += `
+      <button class="activo" onclick="filtrar('Todos', this)">Todos</button>
+    `
+
+    categorias.forEach(c => {
+      contCat.innerHTML += `
+        <button onclick="filtrar('${c}', this)">${c}</button>
+      `
+    })
+
+    // 💥 Descuentos
+    const contDesc = document.getElementById('lista-descuentos')
+
+    descuentos.forEach(d => {
+      contDesc.innerHTML += `
+        <div class="descuento">
+          <h4>${d.nombre}</h4>
+          <p>$${d.precio}</p>
+        </div>
+      `
+    })
+  }
+
+  init()
 </script>
 
 </body>
