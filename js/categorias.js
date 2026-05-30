@@ -1,11 +1,11 @@
 import { supabase } from './supabase.js'
 
 // Cargar categorías únicas
-//export async function cargarCategorias() {
-//  const { data, error } = await supabase.from('productos').select('categoria')
-//  if (error) { console.error(error); return [] }
-  //return [...new Set(data.map(p => p.categoria))]
-//}
+export async function cargarCategorias() {
+  const { data, error } = await supabase.from('categorias').select('categoria')
+  if (error) { console.error(error); return [] }
+ return [...new Set(data.map(p => p.categoria))]
+}
 
 // Agregar categoría
 export async function agregarCategoria(cat) {
