@@ -9,18 +9,32 @@
 
 <h2>Panel Admin</h2>
 
+<h3>Agregar Producto</h3>
+
 <input id="nombre" placeholder="Nombre">
 <input id="precio" placeholder="Precio">
 <input id="precio_desc" placeholder="Precio descuento">
 <input id="imagen" placeholder="URL imagen">
-<input id="categoria" placeholder="Categoría">
+
+<select id="categoria"></select>
 
 <label>
   Descuento
   <input type="checkbox" id="descuento">
 </label>
 
-<button onclick="agregar()">Agregar</button>
+<button onclick="agregar()">Agregar Producto</button>
+
+<hr>
+
+<h3>Agregar Categoría</h3>
+
+<input id="cat_nombre" placeholder="Nombre categoría">
+<input id="cat_imagen" placeholder="URL imagen">
+
+<button onclick="agregarCategoria()">Agregar Categoría</button>
+
+<hr>
 
 <h3>Productos</h3>
 <div id="lista"></div>
@@ -34,20 +48,52 @@ const supabase = createClient(
   'sb_publishable_n_uQGLyDg5sgMgBRBvYdng_IqpQeX1L'
 )
 
+// 🔽 CARGAR CATEGORÍAS EN SELECT
+async function cargarCategorias() {
+  const { data } = await supabase.from('categorias').select('*')
+
+  const select = document.getElementById('categoria')
+  select.innerHTML = ''
+
+  data.forEach(c => {
+    select.innerHTML += `<option value="${c.id}">${c.nombre}</option>`
+  })
+}
+
+// ➕ AGREGAR PRODUCTO
 window.agregar = async function() {
 
-  await supabase.from('productos').insert([{
+  const data = {
     nombre: nombre.value,
     precio: parseFloat(precio.value),
-    precio_desc: parseFloat(precio_desc.value),
     imagen: imagen.value,
-    categoria: categoria.value,
-    descuento: descuento.checked
-  }])
+    categoria_id: parseInt(categoria.value)
+  }
+
+  if (descuento.checked) {
+    data.descuento = true
+    data.precio_desc = parseFloat(precio_desc.value)
+  } else {
+    data.descuento = false
+  }
+
+  await supabase.from('productos').insert([data])
 
   cargar()
 }
 
+// ➕ AGREGAR CATEGORÍA
+window.agregarCategoria = async function() {
+
+  await supabase.from('categorias').insert([{
+    nombre: cat_nombre.value,
+    imagen: cat_imagen.value
+  }])
+
+  cargarCategorias()
+}
+
+// 📦 CARGAR PRODUCTOS
 async function cargar() {
 
   const { data } = await supabase.from('productos').select('*')
@@ -65,12 +111,15 @@ async function cargar() {
   })
 }
 
+// ❌ ELIMINAR
 window.eliminar = async function(id) {
   await supabase.from('productos').delete().eq('id', id)
   cargar()
 }
 
+// 🚀 INIT
 cargar()
+cargarCategorias()
 
 </script>
 
