@@ -41,7 +41,7 @@ const supabase = createClient(
 
 let TODOS = []
 
-// 🛍️ PRODUCTOS
+// 🛍️ RENDER PRODUCTOS
 function render(lista, contenedor) {
   const cont = document.getElementById(contenedor)
   cont.innerHTML = ''
@@ -61,9 +61,7 @@ function render(lista, contenedor) {
           : `<p>$${p.precio}</p>`
         }
 
-        <button onclick="comprar('${p.nombre}')">
-          Comprar
-        </button>
+        <button onclick="comprar('${p.nombre}')">Comprar</button>
       </div>
     `
   })
@@ -71,28 +69,28 @@ function render(lista, contenedor) {
 
 // 🟢 WHATSAPP
 window.comprar = function(nombre) {
-  const numero = '5354555815' // 🔴 TU NÚMERO
+  const numero = '5354555815'
   const mensaje = `Hola, quiero comprar: ${nombre}`
   window.open(`https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`)
 }
 
 // 🔥 FILTRAR
-window.filtrar = function(cat) {
-  const filtrados = TODOS.filter(p => p.categoria === cat)
-  document.getElementById('titulo').innerText = cat
+window.filtrar = function(id, nombre) {
+  const filtrados = TODOS.filter(p => p.categoria_id == id)
+  document.getElementById('titulo').innerText = nombre
   render(filtrados, 'productos')
 }
 
-// 🏷️ CATEGORÍAS
+// 🏷️ RENDER CATEGORÍAS
 function renderCategorias(lista) {
   const cont = document.getElementById('categorias')
   cont.innerHTML = ''
 
   lista.forEach(c => {
     cont.innerHTML += `
-      <div class="categoria-card" onclick="filtrar('${c}')">
-        <img src="https://picsum.photos/400/500?random=${c}">
-        <h3>${c}</h3>
+      <div class="categoria-card" onclick="filtrar(${c.id}, '${c.nombre}')">
+        <img src="${c.imagen}">
+        <h3>${c.nombre}</h3>
       </div>
     `
   })
@@ -101,18 +99,24 @@ function renderCategorias(lista) {
 // 🚀 INIT
 async function init() {
 
-  const { data } = await supabase.from('productos').select('*')
+  // productos con relación
+  const { data: productos } = await supabase
+    .from('productos')
+    .select('*')
 
-  TODOS = data
+  const { data: categorias } = await supabase
+    .from('categorias')
+    .select('*')
 
-  const categorias = [...new Set(data.map(p => p.categoria))]
-  const descuentos = data.filter(p => p.descuento === true)
+  TODOS = productos
+
+  const descuentos = productos.filter(p => p.descuento === true)
 
   renderCategorias(categorias)
   render(descuentos, 'descuentos')
 
   if (categorias.length > 0) {
-    filtrar(categorias[0])
+    filtrar(categorias[0].id, categorias[0].nombre)
   }
 }
 
