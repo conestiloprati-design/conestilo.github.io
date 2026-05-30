@@ -2,18 +2,27 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Admin</title>
+<title>Admin PRO</title>
+
+<style>
+body { font-family: Arial; padding: 20px; }
+input, select, button { margin: 5px; padding: 8px; }
+.producto { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+</style>
+
 </head>
 
 <body>
 
 <h2>Panel Admin</h2>
 
+<!-- ================= PRODUCTOS ================= -->
+
 <h3>Agregar Producto</h3>
 
 <input id="nombre" placeholder="Nombre">
-<input id="precio" placeholder="Precio">
-<input id="precio_desc" placeholder="Precio descuento">
+<input id="precio" type="number" placeholder="Precio">
+<input id="precio_desc" type="number" placeholder="Precio descuento">
 <input id="imagen" placeholder="URL imagen">
 
 <select id="categoria"></select>
@@ -27,6 +36,8 @@
 
 <hr>
 
+<!-- ================= CATEGORÍAS ================= -->
+
 <h3>Agregar Categoría</h3>
 
 <input id="cat_nombre" placeholder="Nombre categoría">
@@ -35,6 +46,8 @@
 <button onclick="agregarCategoria()">Agregar Categoría</button>
 
 <hr>
+
+<!-- ================= LISTA ================= -->
 
 <h3>Productos</h3>
 <div id="lista"></div>
@@ -45,79 +58,158 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const supabase = createClient(
   'https://fypjfxwcruzmbrvoijwg.supabase.co',
-  'sb_publishable_n_uQGLyDg5sgMgBRBvYdng_IqpQeX1L'
+  'TU_PUBLIC_KEY_AQUI'
 )
 
-// 🔽 CARGAR CATEGORÍAS EN SELECT
+
+// ================= CARGAR CATEGORÍAS =================
+
 async function cargarCategorias() {
-  const { data } = await supabase.from('categorias').select('*')
+  const { data, error } = await supabase.from('categorias').select('*')
+
+  if (error) {
+    console.error(error)
+    return
+  }
 
   const select = document.getElementById('categoria')
-  select.innerHTML = ''
+  select.innerHTML = '<option value="">Selecciona categoría</option>'
 
   data.forEach(c => {
     select.innerHTML += `<option value="${c.id}">${c.nombre}</option>`
   })
 }
 
-// ➕ AGREGAR PRODUCTO
+
+// ================= AGREGAR PRODUCTO =================
+
 window.agregar = async function() {
+
+  if (!nombre.value || !precio.value || !categoria.value) {
+    alert("Faltan datos")
+    return
+  }
 
   const data = {
     nombre: nombre.value,
     precio: parseFloat(precio.value),
     imagen: imagen.value,
-    categoria_id: parseInt(categoria.value)
+    categoria_id: parseInt(categoria.value),
+    descuento: descuento.checked
   }
 
   if (descuento.checked) {
-    data.descuento = true
-    data.precio_desc = parseFloat(precio_desc.value)
-  } else {
-    data.descuento = false
+    data.precio_desc = parseFloat(precio_desc.value) || 0
   }
 
-  await supabase.from('productos').insert([data])
+  const { error } = await supabase.from('productos').insert([data])
 
+  if (error) {
+    console.error(error)
+    alert("Error: " + error.message)
+    return
+  }
+
+  alert("Producto agregado")
+
+  limpiarProducto()
   cargar()
 }
 
-// ➕ AGREGAR CATEGORÍA
+
+// ================= AGREGAR CATEGORÍA =================
+
 window.agregarCategoria = async function() {
 
-  await supabase.from('categorias').insert([{
-    nombre: cat_nombre.value,
-    imagen: cat_imagen.value
-  }])
+  if (!cat_nombre.value) {
+    alert("Pon nombre a la categoría")
+    return
+  }
+
+  const { error } = await supabase
+    .from('categorias')
+    .insert([{
+      nombre: cat_nombre.value,
+      imagen: cat_imagen.value || null
+    }])
+
+  if (error) {
+    console.error(error)
+    alert("Error: " + error.message)
+    return
+  }
+
+  alert("Categoría agregada")
+
+  cat_nombre.value = ''
+  cat_imagen.value = ''
 
   cargarCategorias()
 }
 
-// 📦 CARGAR PRODUCTOS
+
+// ================= CARGAR PRODUCTOS =================
+
 async function cargar() {
 
-  const { data } = await supabase.from('productos').select('*')
+  const { data, error } = await supabase
+    .from('productos')
+    .select('*')
+
+  if (error) {
+    console.error(error)
+    return
+  }
 
   const cont = document.getElementById('lista')
   cont.innerHTML = ''
 
   data.forEach(p => {
     cont.innerHTML += `
-      <div>
-        ${p.nombre} - $${p.precio}
-        <button onclick="eliminar('${p.id}')">❌</button>
+      <div class="producto">
+        <b>${p.nombre}</b><br>
+        Precio: $${p.precio}<br>
+        ${p.descuento ? `Descuento: $${p.precio_desc}` : ''}
+        <br>
+        <button onclick="eliminar(${p.id})">❌ Eliminar</button>
       </div>
     `
   })
 }
 
-// ❌ ELIMINAR
+
+// ================= ELIMINAR =================
+
 window.eliminar = async function(id) {
-  await supabase.from('productos').delete().eq('id', id)
+
+  const { error } = await supabase
+    .from('productos')
+    .delete()
+    .eq('id', id)
+
+  if (error) {
+    console.error(error)
+    alert("Error al eliminar")
+    return
+  }
+
   cargar()
 }
 
-// 🚀 INIT
+
+// ================= LIMPIAR =================
+
+function limpiarProducto() {
+  nombre.value = ''
+  precio.value = ''
+  precio_desc.value = ''
+  imagen.value = ''
+  descuento.checked = false
+}
+
+
+// ================= INIT =================
+
 cargar()
 cargarCategorias()
 
