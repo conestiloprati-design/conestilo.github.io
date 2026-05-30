@@ -4,113 +4,107 @@
   <meta charset="UTF-8">
   <title>Mi Tienda</title>
 
+  <!-- TU CSS -->
   <link rel="stylesheet" href="css/estilos.css">
-
-  <script type="module" src="js/productos.js"></script>
-  <script type="module" src="js/categorias.js"></script>
 </head>
 
 <body>
 
 <header>
   <div class="logo">Co'n Estilo</div>
-  <nav>
-    <a href="#">Inicio</a>
-    <a href="#">Productos</a>
-    <a href="#">Contacto</a>
-  </nav>
 </header>
 
-<!-- 🔥 HERO -->
-<section class="hero">
-  <div class="overlay">
-    <h1>Descubre tu estilo</h1>
-    <p>Moda moderna al mejor precio</p>
-    <a href="#categorias" class="btn">Comprar ahora</a>
-  </div>
-</section>
-
-<!-- 🏷️ CATEGORÍAS CON IMAGEN -->
-<section class="categorias" id="categorias">
+<!-- 🏷️ CATEGORÍAS -->
+<section class="categorias">
   <h2>Categorías</h2>
-  <div class="categoria-grid" id="lista-categorias"></div>
+  <div class="categoria-grid" id="categorias"></div>
 </section>
 
 <!-- 🛍️ PRODUCTOS -->
 <section class="productos">
-  <h2 id="titulo-categoria">Productos</h2>
-  <div class="productos-grid" id="lista-productos"></div>
+  <h2 id="titulo">Productos</h2>
+  <div class="productos-grid" id="productos"></div>
 </section>
 
-<footer>
-  <h3>Co'n Estilo</h3>
-  <p>Síguenos en redes</p>
-</footer>
-
+<!-- 🔥 SCRIPT TODO EN UNO (SIN IMPORTS PARA EVITAR ERRORES) -->
 <script type="module">
-  import { cargarProductos } from './js/productos.js'
-  import { cargarCategorias } from './js/categorias.js'
 
-  let TODOS = []
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-  // 🛍️ MOSTRAR PRODUCTOS
-  function renderProductos(lista) {
-    const cont = document.getElementById('lista-productos')
-    cont.innerHTML = ''
+// 🔴 PON TUS DATOS
+const supabase = createClient(
+  'https://TU_URL.supabase.co',
+  'TU_ANON_KEY'
+)
 
-    lista.forEach(p => {
-      cont.innerHTML += `
-        <div class="producto-card">
-          <img src="${p.imagen}">
-          <h3>${p.nombre}</h3>
-          <p class="${p.precio == 0 ? 'agotado' : ''}">
-            ${p.precio == 0 ? 'Agotado' : '$' + p.precio}
-          </p>
-          <button ${p.precio == 0 ? 'disabled' : ''}>
-            Comprar
-          </button>
-        </div>
-      `
-    })
+let TODOS = []
+
+// 🛍️ MOSTRAR PRODUCTOS
+function mostrarProductos(lista) {
+  const cont = document.getElementById('productos')
+  cont.innerHTML = ''
+
+  lista.forEach(p => {
+    cont.innerHTML += `
+      <div class="producto-card">
+        <img src="${p.imagen}">
+        <h3>${p.nombre}</h3>
+        <p class="${p.precio == 0 ? 'agotado' : ''}">
+          ${p.precio == 0 ? 'Agotado' : '$' + p.precio}
+        </p>
+        <button ${p.precio == 0 ? 'disabled' : ''}>
+          Comprar
+        </button>
+      </div>
+    `
+  })
+}
+
+// 🔥 FILTRAR
+window.filtrar = function(cat) {
+  const filtrados = TODOS.filter(p => p.categoria === cat)
+  document.getElementById('titulo').innerText = cat
+  mostrarProductos(filtrados)
+}
+
+// 🏷️ MOSTRAR CATEGORÍAS
+function mostrarCategorias(lista) {
+  const cont = document.getElementById('categorias')
+  cont.innerHTML = ''
+
+  lista.forEach(c => {
+    cont.innerHTML += `
+      <div class="categoria-card" onclick="filtrar('${c}')">
+        <img src="https://picsum.photos/400/500?random=${c}">
+        <h3>${c}</h3>
+      </div>
+    `
+  })
+}
+
+// 🚀 INICIO
+async function init() {
+
+  // traer productos
+  const { data } = await supabase
+    .from('productos')
+    .select('*')
+
+  TODOS = data
+
+  // sacar categorías únicas
+  const categorias = [...new Set(data.map(p => p.categoria))]
+
+  mostrarCategorias(categorias)
+
+  // mostrar primera categoría
+  if (categorias.length > 0) {
+    filtrar(categorias[0])
   }
+}
 
-  // 🔥 FILTRAR POR CATEGORÍA
-  window.filtrarCategoria = function(cat) {
-    const filtrados = TODOS.filter(p => p.categoria === cat)
+init()
 
-    document.getElementById('titulo-categoria').innerText = cat
-
-    renderProductos(filtrados)
-  }
-
-  // 🏷️ MOSTRAR CATEGORÍAS CON IMAGEN
-  function renderCategorias(lista) {
-    const cont = document.getElementById('lista-categorias')
-    cont.innerHTML = ''
-
-    lista.forEach(c => {
-      cont.innerHTML += `
-        <div class="categoria-card" onclick="filtrarCategoria('${c.nombre}')">
-          <img src="${c.imagen}">
-          <h3>${c.nombre}</h3>
-        </div>
-      `
-    })
-  }
-
-  async function init() {
-    TODOS = await cargarProductos()
-    const categorias = await cargarCategorias()
-
-    renderCategorias(categorias)
-
-    // 🔥 mostrar primera categoría automáticamente
-    if (categorias.length > 0) {
-      filtrarCategoria(categorias[0].nombre)
-    }
-  }
-
-  init()
 </script>
 
 </body>
