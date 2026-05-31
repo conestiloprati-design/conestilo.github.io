@@ -182,7 +182,48 @@ window.agregarCategoria = async function() {
   cargarCategorias()
 }
 
+// ================= CAMBIAR ESTADO (FIX REAL) =================
+window.toggleEstado = async function(id, estado) {
 
+  const nuevo = estado === "agotado" ? "disponible" : "agotado"
+
+  const { error } = await supabase
+    .from('productos')
+    .update({ estado: nuevo })
+    .eq('id', id)
+
+  if (error) {
+    alert("Error: " + error.message)
+    return
+  }
+
+  cargar()
+}
+
+
+// ================= DESCUENTOS =================
+window.ponerDescuento = async function(id) {
+
+  const precio = prompt("Precio con descuento:")
+  if (!precio) return
+
+  await supabase.from('descuentos').insert([{
+    producto_id: id,
+    precio_desc: parseFloat(precio)
+  }])
+
+  cargar()
+}
+
+window.quitarDescuento = async function(id) {
+
+  await supabase.from('descuentos')
+    .delete()
+    .eq('producto_id', id)
+
+  cargar()
+}
+  
 // ================= LISTAR PRODUCTOS =================
 async function cargar() {
 
