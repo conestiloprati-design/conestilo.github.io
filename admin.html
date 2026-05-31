@@ -253,11 +253,40 @@ async function cargar() {
 
         💰 ${p.precio} ${p.moneda}
 
+    const estadoColor = p.estado === "agotado"
+      ? "<span style='color:red'>❌ AGOTADO</span>"
+      : "<span style='color:green'>✔ DISPONIBLE</span>"
+
+    cont.innerHTML += `
+      <div class="producto">
+
+        <b>${p.nombre}</b><br>
+
+        💰 ${p.precio} ${p.moneda}<br>
+
+        ${t.length ? `👕 Tallas: ${t.join(', ')}<br>` : ""}
+        ${n.length ? `👟 Números: ${n.join(', ')}<br>` : ""}
+
+        ${estadoColor}<br>
+
+        ${d ? `🔥 Descuento: $${d.precio_desc}<br>` : ""}
+
+        <br>
+
+        <button onclick="toggleEstado(${p.id}, '${p.estado || "disponible"}')">
+          Cambiar estado
+        </button>
+
+        <button onclick="ponerDescuento(${p.id})">💸 Descuento</button>
+
+        ${d ? `<button onclick="quitarDescuento(${p.id})">❌ Quitar</button>` : ""}
+
+        <button onclick="eliminar(${p.id})">🗑 Eliminar</button>
+
       </div>
     `
   })
 }
-
 
 // ================= INIT =================
 cargar()
