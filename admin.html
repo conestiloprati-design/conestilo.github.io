@@ -184,15 +184,9 @@ window.agregarCategoria = async function() {
 
 
 // ================= LISTAR PRODUCTOS =================
-async function cargar() {
-
-  const { data } = await supabase
-    .from('productos')
-    .select(`
-      *,
-      tallas (talla),
-      numeros (numero)
-    `)
+const { data } = await supabase
+  .from('productos')
+  .select('*')
 
   const cont = document.getElementById('lista')
   cont.innerHTML = ''
