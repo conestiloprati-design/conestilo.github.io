@@ -1,1 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Admin PRO FINAL FIX</title>
 
+<style>
+body {
+  font-family: Arial;
+  padding: 20px;
+  background-image: url('https://i.postimg.cc/Qx1fnHFL/IMG-20260506-WA0016.jpg');
+  background-size: cover;
+}
+
+.panel {
+  background: rgba(255,255,255,0.95);
+  padding: 15px;
+  border-radius: 10px;
+}
+
+input, select, button {
+  margin: 5px;
+  padding: 8px;
+}
+
+.producto {
+  background: white;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="panel">
+
+<h2>Admin PRO FINAL</h2>
+
+<hr>
+
+<!-- ================= PRODUCTO ================= -->
+
+<h3>Agregar Producto</h3>
+
+<input id="nombre" placeholder="Nombre">
+<input id="precio" type="number" placeholder="Precio">
+<input id="imagen" placeholder="URL imagen">
+<input id="moneda" placeholder="USD, CUP">
+
+<select id="categoria"></select>
+
+<select id="tipo">
+  <option value="">Tipo</option>
+  <option value="talla">Ropa (Talla)</option>
+  <option value="numero">Zapato (Número)</option>
+</select>
+
+<input id="valor" placeholder="Ej: M o 39">
+
+<button onclick="agregar()">Agregar Producto</button>
+
+<hr>
+
+<!-- ================= CATEGORÍA ================= -->
+
+<h3>Agregar Categoría</h3>
+
+<input id="cat_nombre" placeholder="Nombre categoría">
+<input id="cat_imagen" placeholder="URL imagen">
+
+<button onclick="agregarCategoria()">Agregar Categoría</button>
+
+<hr>
+
+<h3>Productos</h3>
+<div id="lista"></div>
+
+</div>
+
+<script type="module">
+
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+// ================= SUPABASE =================
+const supabase = createClient(
+  'https://fypjfxwcruzmbrvoijwg.supabase.co',
+  'sb_publishable_n_uQGLyDg5sgMgBRBvYdng_IqpQeX1L'
+)
+
+
+// ================= CATEGORÍAS =================
+async function cargarCategorias() {
+
+  const { data } = await supabase.from('categorias').select('*')
+
+  const select = document.getElementById('categoria')
+  select.innerHTML = '<option value="">Categoría</option>'
+
+  data.forEach(c => {
+    select.innerHTML += `<option value="${c.id}">${c.nombre}</option>`
+  })
+}
+
+
+// ================= AGREGAR PRODUCTO =================
+window.agregar = async function() {
+
+  if (!nombre.value || !precio.value || !categoria.value) {
+    alert("Faltan datos")
+    return
+  }
+
+  const { data, error } = await supabase
+    .from('productos')
+    .insert([{
+      nombre: nombre.value,
+      precio: parseFloat(precio.value),
+      imagen: imagen.value,
+      categoria_id: parseInt(categoria.value),
+      moneda: moneda.value || "USD",
+      estado: "disponible"
+    }])
+    .select()
+
+  if (error) {
+    alert(error.message)
+    return
+  }
+
+  const id = data[0].id
+
+  if (tipo.value === "talla") {
+    await supabase.from('tallas').insert([{
+      producto_id: id,
+      talla: valor.value
+    }])
+  }
+
+  if (tipo.value === "numero") {
+    await supabase.from('numeros').insert([{
+      producto_id: id,
+      numero: valor.value
+    }])
+  }
+
+  cargar()
+}
+
+
+// ================= AGREGAR CATEGORÍA =================
+window.agregarCategoria = async function() {
+
+  await supabase.from('categorias').insert([{
+    nombre: cat_nombre.value,
+    imagen: cat_imagen.value || null
+  }])
+
+  cat_nombre.value = ''
+  cat_imagen.value = ''
+
+  cargarCategorias()
+}
+
+
+// ================= CAMBIAR ESTADO =================
+window.toggleEstado = async function(id, estado) {
+
+  const nuevo = estado === "agotado" ? "disponible" : "agotado"
+
+  await supabase
+    .from('productos')
+    .update({ estado: nuevo })
+    .eq('id', id)
+
+  cargar()
+}
+
+
+// ================= LISTAR TODO =================
+async function cargar() {
+
+  const { data: productos } = await supabase.from('productos').select('*')
+  const { data: tallas } = await supabase.from('tallas').select('*')
+  const { data: numeros } = await supabase.from('numeros').select('*')
+  const { data: descuentos } = await supabase.from('descuentos').select('*')
+
+  const cont = document.getElementById('lista')
+  cont.innerHTML = ''
+
+  productos.forEach(p => {
+
+    const t = (tallas || []).filter(x => x.producto_id == p.id).map(x => x.talla)
+    const n = (numeros || []).filter(x => x.producto_id == p.id).map(x => x.numero)
+    const d = (descuentos || []).find(x => x.producto_id == p.id)
+
+    cont.innerHTML += `
+      <div class="producto">
+
+        <b>${p.nombre}</b><br>
+
+        💰 ${p.precio} ${p.moneda || "USD"}<br>
+
+        ${t.length ? `👕 Tallas: ${t.join(', ')}<br>` : ""}
+        ${n.length ? `👟 Números: ${n.join(', ')}<br>` : ""}
+
+        ${p.estado === "agotado"
+          ? "<span style='color:red'>❌ AGOTADO</span><br>"
+          : "<span style='color:green'>✔ DISPONIBLE</span><br>"
+        }
+
+        <br>
+
+        ${d
+          ? `🔥 Descuento: $${d.precio_desc}<br>`
+          : "Sin descuento<br>"
+        }
+
+        <br>
+
+        <button onclick="toggleEstado(${p.id}, '${p.estado}')">Estado</button>
+        <button onclick="ponerDescuento(${p.id})">💸 Descuento</button>
+
+        ${d ? `<button onclick="quitarDescuento(${p.id})">❌ Quitar</button>` : ""}
+
+        <button onclick="eliminar(${p.id})">🗑 Eliminar</button>
+
+      </div>
+    `
+  })
+}
+
+
+// ================= DESCUENTOS =================
+window.ponerDescuento = async function(id) {
+
+  const precio = prompt("Precio con descuento:")
+
+  if (!precio) return
+
+  await supabase.from('descuentos').insert([{
+    producto_id: id,
+    precio_desc: parseFloat(precio)
+  }])
+
+  cargar()
+}
+
+window.quitarDescuento = async function(id) {
+
+  await supabase.from('descuentos')
+    .delete()
+    .eq('producto_id', id)
+
+  cargar()
+}
+
+
+// ================= ELIMINAR =================
+window.eliminar = async function(id) {
+
+  await supabase.from('productos')
+    .delete()
+    .eq('id', id)
+
+  cargar()
+}
+
+
+// ================= INIT =================
+cargar()
+cargarCategorias()
+
+</script>
+
+</body>
+</html>
