@@ -1,1 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Categoría</title>
 
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body>
+
+<header>
+  <div class="logo">Co'n Estilo</div>
+
+  <nav>
+    <a href="index.html">Inicio</a>
+  </nav>
+</header>
+
+<section class="productos">
+  <h2 id="tituloCategoria">Productos</h2>
+
+  <div id="productosGrid" class="productos-grid"></div>
+</section>
+
+<script type="module">
+
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+// ================= SUPABASE =================
+const supabase = createClient(
+  'https://fypjfxwcruzmbrvoijwg.supabase.co',
+  'sb_publishable_n_uQGLyDg5sgMgBRBvYdng_IqpQeX1L'
+)
+
+
+// ================= WHATSAPP =================
+window.comprar = function(nombre, precio) {
+
+  const telefono = "5354555815"
+
+  const mensaje = `Hola, quiero comprar:%0AProducto: ${nombre}%0APrecio: $${precio}`
+
+  const url = `https://wa.me/${telefono}?text=${mensaje}`
+
+  window.open(url, "_blank")
+}
+
+
+// ================= OBTENER ID =================
+const params = new URLSearchParams(window.location.search)
+const categoriaId = params.get('id')
+
+
+// ================= CARGAR PRODUCTOS =================
+async function cargarProductos() {
+
+  const { data: productos } = await supabase
+    .from('productos')
+    .select('*')
+    .eq('categoria_id', categoriaId)
+
+  const { data: estados } = await supabase.from('estados').select('*')
+
+  const { data: categorias } = await supabase.from('categorias').select('*')
+
+  // 🔥 título dinámico
+  const cat = categorias.find(c => c.id == categoriaId)
+  if (cat) {
+    document.getElementById('tituloCategoria').innerText = cat.nombre
+  }
+
+  const cont = document.getElementById('productosGrid')
+  cont.innerHTML = ''
+
+  productos.forEach(p => {
+
+    const e = estados.find(x => x.producto_id == p.id)
+    const estado = e ? e.estado : "disponible"
+
+    const estadoTexto = estado === "agotado"
+      ? "<span class='agotado'>❌ Agotado</span>"
+      : "<span class='disponible'>✔ Disponible</span>"
+
+    const boton = estado === "agotado"
+      ? `<button disabled>Agotado</button>`
+      : `<button onclick="comprar('${p.nombre}','${p.precio}')">Comprar</button>`
+
+    cont.innerHTML += `
+      <div class="producto-card">
+
+        <img src="${p.imagen}">
+
+        <h3>${p.nombre}</h3>
+
+        ${p.talla ? `<p>👕 Talla: ${p.talla}</p>` : ""}
+        ${p.numero ? `<p>👟 Número: ${p.numero}</p>` : ""}
+
+        <p><b>$${p.precio} ${p.moneda}</b></p>
+
+        ${estadoTexto}
+
+        ${boton}
+
+      </div>
+    `
+  })
+}
+
+
+// ================= INIT =================
+cargarProductos()
+
+</script>
+
+</body>
+</html>
