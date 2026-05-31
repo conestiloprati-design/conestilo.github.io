@@ -1,1 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Co'n Estilo</title>
 
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+  <div class="logo">Co'n Estilo</div>
+
+  <nav>
+    <a href="#categorias">Categorías</a>
+    <a href="#productos">Descuentos</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="overlay">
+    <h1>Moda con estilo</h1>
+    <p>Zapatos, ropa y accesorios modernos</p>
+    <a href="#productos" class="btn">Ver ofertas 🔥</a>
+  </div>
+</section>
+
+<!-- ================= CATEGORÍAS ================= -->
+<section id="categorias">
+  <h2>Categorías</h2>
+  <div id="categoriaGrid"></div>
+</section>
+
+<!-- ================= DESCUENTOS ================= -->
+<section id="productos">
+  <h2>🔥 Productos en Descuento</h2>
+  <div id="productosGrid"></div>
+</section>
+
+<footer>
+  <h3>Co'n Estilo</h3>
+</footer>
+
+<script type="module">
+
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+// ================= SUPABASE =================
+const supabase = createClient(
+  'https://fypjfxwcruzmbrvoijwg.supabase.co',
+  'sb_publishable_n_uQGLyDg5sgMgBRBvYdng_IqpQeX1L'
+)
+
+
+// ================= WHATSAPP =================
+window.comprar = function(nombre, precio) {
+
+  const telefono = "5210000000000"
+
+  const mensaje = `Hola, quiero comprar:%0AProducto: ${nombre}%0APrecio: $${precio}`
+
+  const url = `https://wa.me/${telefono}?text=${mensaje}`
+
+  window.open(url, "_blank")
+}
+
+
+// ================= CATEGORÍAS =================
+async function cargarCategorias() {
+
+  const { data } = await supabase.from('categorias').select('*')
+
+  const cont = document.getElementById('categoriaGrid')
+  cont.innerHTML = ''
+
+  data.forEach(c => {
+    cont.innerHTML += `
+      <div>
+        <a href="categoria.html?id=${c.id}">
+          <img src="${c.imagen}" width="150">
+          <h3>${c.nombre}</h3>
+        </a>
+      </div>
+    `
+  })
+}
+
+
+// ================= PRODUCTOS DESCUENTO =================
+async function cargarProductos() {
+
+  const { data: productos } = await supabase.from('productos').select('*')
+  const { data: descuentos } = await supabase.from('descuentos').select('*')
+  const { data: estados } = await supabase.from('estados').select('*')
+
+  const cont = document.getElementById('productosGrid')
+  cont.innerHTML = ''
+
+  productos.forEach(p => {
+
+    const d = descuentos.find(x => x.producto_id == p.id)
+    if (!d) return
+
+    const e = estados.find(x => x.producto_id == p.id)
+    const estado = e ? e.estado : "disponible"
+
+    const estadoTexto = estado === "agotado"
+      ? "<span style='color:red'>Agotado</span>"
+      : "<span style='color:green'>Disponible</span>"
+
+    const boton = estado === "agotado"
+      ? `<button disabled>Agotado</button>`
+      : `<button onclick="comprar('${p.nombre}','${d.precio_desc}')">Comprar</button>`
+
+    cont.innerHTML += `
+      <div>
+
+        <img src="${p.imagen}" width="150">
+
+        <h3>${p.nombre}</h3>
+
+        ${p.talla ? `<p>Talla: ${p.talla}</p>` : ""}
+        ${p.numero ? `<p>Número: ${p.numero}</p>` : ""}
+
+        <p>
+          <span style="text-decoration:line-through">$${p.precio}</span>
+          <b>$${d.precio_desc}</b>
+        </p>
+
+        ${estadoTexto}
+
+        <br><br>
+
+        ${boton}
+
+      </div>
+    `
+  })
+}
+
+
+// ================= INIT =================
+cargarCategorias()
+cargarProductos()
+
+</script>
+
+</body>
+</html>
