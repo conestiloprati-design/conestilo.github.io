@@ -49,7 +49,6 @@ input, select, button {
 
 <hr>
 
-<!-- PRODUCTO -->
 <h3>Agregar Producto</h3>
 
 <input id="nombre" placeholder="Nombre">
@@ -66,7 +65,6 @@ input, select, button {
 
 <hr>
 
-<!-- CATEGORÍA -->
 <h3>Agregar Categoría</h3>
 
 <input id="cat_nombre" placeholder="Nombre categoría">
@@ -90,11 +88,15 @@ const supabase = createClient(
   'sb_publishable_n_uQGLyDg5sgMgBRBvYdng_IqpQeX1L'
 )
 
-
 // ================= CATEGORÍAS =================
 async function cargarCategorias() {
 
-  const { data } = await supabase.from('categorias').select('*')
+  const { data, error } = await supabase.from('categorias').select('*')
+
+  if (error) {
+    console.log(error)
+    return
+  }
 
   categoria.innerHTML = '<option value="">Categoría</option>'
 
@@ -102,7 +104,6 @@ async function cargarCategorias() {
     categoria.innerHTML += `<option value="${c.id}">${c.nombre}</option>`
   })
 }
-
 
 // ================= AGREGAR PRODUCTO =================
 window.agregar = async function() {
@@ -130,17 +131,18 @@ window.agregar = async function() {
     return
   }
 
-  // crear estado automático
-  await supabase.from('estados').insert([{
+  // Crear estado automático
+  const { error: errorEstado } = await supabase.from('estados').insert([{
     producto_id: data[0].id,
     estado: "disponible"
   }])
+
+  if (errorEstado) console.log(errorEstado)
 
   alert("Producto agregado")
 
   cargar()
 }
-
 
 // ================= AGREGAR CATEGORÍA =================
 window.agregarCategoria = async function() {
@@ -170,32 +172,48 @@ window.agregarCategoria = async function() {
   cargarCategorias()
 }
 
-
-// ================= CAMBIAR ESTADO (FIX REAL) =================
+// ================= ESTADO (FIX DEFINITIVO) =================
 window.toggleEstado = async function(id, actual) {
 
   const nuevo = actual === "agotado" ? "disponible" : "agotado"
 
-  // 🔥 verificar si existe
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('estados')
     .select('*')
     .eq('producto_id', id)
+    .maybeSingle()
 
-  if (data.length > 0) {
-    await supabase
+  if (error) {
+    alert("Error al buscar estado")
+    console.log(error)
+    return
+  }
+
+  if (data) {
+    const { error: errorUpdate } = await supabase
       .from('estados')
       .update({ estado: nuevo })
       .eq('producto_id', id)
+
+    if (errorUpdate) {
+      alert("Error al actualizar")
+      console.log(errorUpdate)
+      return
+    }
   } else {
-    await supabase
+    const { error: errorInsert } = await supabase
       .from('estados')
       .insert([{ producto_id: id, estado: nuevo }])
+
+    if (errorInsert) {
+      alert("Error al crear estado")
+      console.log(errorInsert)
+      return
+    }
   }
 
   cargar()
 }
-
 
 // ================= DESCUENTOS =================
 window.ponerDescuento = async function(id) {
@@ -220,7 +238,6 @@ window.quitarDescuento = async function(id) {
   cargar()
 }
 
-
 // ================= ELIMINAR =================
 window.eliminar = async function(id) {
 
@@ -230,7 +247,6 @@ window.eliminar = async function(id) {
 
   cargar()
 }
-
 
 // ================= LISTAR =================
 async function cargar() {
@@ -243,10 +259,10 @@ async function cargar() {
 
   productos.forEach(p => {
 
-    const e = estados.find(x => x.producto_id == p.id)
+    const e = estados.find(x => Number(x.producto_id) === Number(p.id))
     const estado = e ? e.estado : "disponible"
 
-    const d = descuentos.find(x => x.producto_id == p.id)
+    const d = descuentos.find(x => Number(x.producto_id) === Number(p.id))
 
     const estadoColor = estado === "agotado"
       ? "<span style='color:red'>❌ AGOTADO</span>"
@@ -287,7 +303,6 @@ async function cargar() {
   })
 }
 
-
 // ================= INIT =================
 cargar()
 cargarCategorias()
@@ -295,4 +310,4 @@ cargarCategorias()
 </script>
 
 </body>
-</html>
+</html>      
