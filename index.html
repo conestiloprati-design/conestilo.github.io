@@ -59,13 +59,13 @@ const supabase = createClient(
 
 
 // ================= WHATSAPP =================
-window.comprar = function(nombre, precio) {
+window.comprar = function(nombre, precio, imagen) {
 
-  const telefono = "5354555815"
+  const telefono = "5358231944"
 
-  const mensaje = `Hola, quiero comprar:%0AProducto: ${nombre}%0APrecio: $${precio}`
+  const mensaje = `Hola, quiero comprar:%0AProducto: ${nombre}%0APrecio: $${precio}%0AImagen: ${imagen}`
 
-  const url = `https://wa.me/${telefono}?text=${mensaje}`
+  const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`
 
   window.open(url, "_blank")
 }
