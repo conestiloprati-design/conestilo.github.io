@@ -63,7 +63,10 @@ window.comprar = function(nombre, precio, imagen) {
 
   const telefono = "5358231944"
 
-  const mensaje = `Hola, quiero comprar:%0AProducto: ${nombre}%0APrecio: $${precio}%0AImagen: ${imagen}`
+  const mensaje = `Hola, quiero comprar:
+  ${nombre}
+  $${precio}
+  ${imagen}`
 
   const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`
 
