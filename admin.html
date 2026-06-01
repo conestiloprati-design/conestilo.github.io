@@ -172,48 +172,54 @@ window.agregarCategoria = async function() {
   cargarCategorias()
 }
 
-// ================= ESTADO (FIX DEFINITIVO) =================
+// ================= ESTADO (CORREGIDO) =================
 window.toggleEstado = async function(id, actual) {
+  // Alternar entre disponible y agotado
+  const nuevo = actual === "agotado" ? "disponible" : "agotado";
 
-  const nuevo = actual === "agotado" ? "disponible" : "agotado"
-
+  // Buscar si ya existe un estado para este producto
   const { data, error } = await supabase
     .from('estados')
     .select('*')
     .eq('producto_id', id)
-    .maybeSingle()
+    .single();   // <-- corregido, usar single()
 
-  if (error) {
-    alert("Error al buscar estado")
-    console.log(error)
-    return
+  if (error && error.code !== 'PGRST116') { 
+    // PGRST116 = no se encontró registro (PostgREST)
+    alert("Error al buscar estado");
+    console.log(error);
+    return;
   }
 
   if (data) {
+    // Si existe, actualizar
     const { error: errorUpdate } = await supabase
       .from('estados')
       .update({ estado: nuevo })
-      .eq('producto_id', id)
+      .eq('producto_id', id);
 
     if (errorUpdate) {
-      alert("Error al actualizar")
-      console.log(errorUpdate)
-      return
+      alert("Error al actualizar");
+      console.log(errorUpdate);
+      return;
     }
   } else {
+    // Si no existe, crear
     const { error: errorInsert } = await supabase
       .from('estados')
-      .insert([{ producto_id: id, estado: nuevo }])
+      .insert([{ producto_id: id, estado: nuevo }]);
 
     if (errorInsert) {
-      alert("Error al crear estado")
-      console.log(errorInsert)
-      return
+      alert("Error al crear estado");
+      console.log(errorInsert);
+      return;
     }
   }
 
-  cargar()
+  // Recargar lista
+  cargar();
 }
+
 
 // ================= DESCUENTOS =================
 window.ponerDescuento = async function(id) {
