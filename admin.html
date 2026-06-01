@@ -172,26 +172,25 @@ window.agregarCategoria = async function() {
   cargarCategorias()
 }
 
-// ================= ESTADO (CORREGIDO) =================
+// ================= ESTADO (CORREGIDO DEFINITIVO) =================
 window.toggleEstado = async function(id, actual) {
   // Alternar entre disponible y agotado
   const nuevo = actual === "agotado" ? "disponible" : "agotado";
 
-  // Buscar si ya existe un estado para este producto
+  // Buscar estado existente
   const { data, error } = await supabase
     .from('estados')
     .select('*')
     .eq('producto_id', id)
-    .single();   // <-- corregido, usar single()
+    .limit(1);   // en lugar de single()
 
-  if (error && error.code !== 'PGRST116') { 
-    // PGRST116 = no se encontró registro (PostgREST)
+  if (error) {
     alert("Error al buscar estado");
     console.log(error);
     return;
   }
 
-  if (data) {
+  if (data && data.length > 0) {
     // Si existe, actualizar
     const { error: errorUpdate } = await supabase
       .from('estados')
@@ -219,7 +218,6 @@ window.toggleEstado = async function(id, actual) {
   // Recargar lista
   cargar();
 }
-
 
 // ================= DESCUENTOS =================
 window.ponerDescuento = async function(id) {
