@@ -116,7 +116,7 @@ async function cargarProductos() {
 
     const boton = estado === "agotado"
       ? `<button disabled>Agotado</button>`
-      : `<button onclick="comprar('${p.nombre}','${d.precio_desc}')">Comprar</button>`
+      : `<button onclick="comprar('${p.nombre}','${d.precio_desc}','${p.imagen}')">Comprar</button>`
 
     cont.innerHTML += `
       <div class="producto-card">
