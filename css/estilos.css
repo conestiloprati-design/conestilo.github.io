@@ -312,7 +312,7 @@ footer {
 .producto-card button:disabled {
     background: gray;
     cursor: not-allowed;
-
+}
 .descripcion {
     font-size: 12px; /* Tamaño de letra pequeño */
     color: black; /* Color del texto */
