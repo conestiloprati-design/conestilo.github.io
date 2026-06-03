@@ -120,12 +120,43 @@ async function cargarProductos() {
     const boton = estado === "agotado"
       ? `<button disabled>Agotado</button>`
       : `<button onclick="comprar('${p.nombre}','${d.precio_desc}','${p.imagen}')">Comprar</button>`
+
+    function procesarDescripcion(texto) {
+  if (!texto) return "";
+
+  const colores = {
+    "rojo": "red",
+    "azul": "blue",
+    "verde": "green",
+    "amarillo": "yellow",
+    "negro": "black",
+    "blanco": "white",
+    "gris": "gray",
+    "naranja": "orange",
+    "violeta": "purple",
+    "marrón": "brown"
+  };
+
+  let resultado = texto;
+
+  Object.keys(colores).forEach(nombre => {
+    const regex = new RegExp(nombre, "gi");
+    resultado = resultado.replace(
+      regex,
+      `<span class="color-circulo" style="background-color:${colores[nombre]};"></span>`
+    );
+  });
+
+  return `<p class="descripcion">${resultado}</p>`;
+}
+
     
  // Solo muestra la descripción si existe
     const descripcionHTML = p.descripcion ? `<p class="descripcion">Descripción: ${p.descripcion}</p>` : '';
 
  // Si se menciona un color, crea un círculo
-    const colorHTML = p.color ? `<span class="color-circulo" css/estilos="background-color: ${p.color};"></span>` : '';
+   const colorHTML = p.color ? `<span class="color-circulo" style="background-color:${p.color};"></span>` : '';
+
     
     cont.innerHTML += `
       <div class="producto-card">
@@ -137,8 +168,8 @@ async function cargarProductos() {
         ${p.talla ? `<p>👕 Talla: ${p.talla}</p>` : ""}
         ${p.numero ? `<p>👟 Número: ${p.numero}</p>` : ""}
         
-        ${descripcionHTML} <!-- Correctamente incorporando las variables -->
-        
+        const descripcionHTML = p.descripcion ? procesarDescripcion(p.descripcion) : '';
+
         <p>
           <span class="precio-viejo">$${p.precio}</span>
           <span class="precio-nuevo">$${d.precio_desc}</span>
