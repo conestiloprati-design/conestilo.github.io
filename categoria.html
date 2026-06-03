@@ -113,6 +113,9 @@ async function cargarProductos() {
       ? `<button disabled>Agotado</button>`
       : `<button onclick="comprar('${p.nombre}','${p.precio}','${p.imagen}')">Comprar</button>`
 
+    // Solo muestra la descripción si existe
+    const descripcionHTML = p.descripcion ? `<p>Descripción: ${p.descripcion}</p>` : '';
+
     cont.innerHTML += `
       <div class="producto-card">
 
