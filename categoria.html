@@ -155,7 +155,9 @@ async function cargarProductos() {
         ${p.talla ? `<p>👕 Talla: ${p.talla}</p>` : ""}
         ${p.numero ? `<p>👟 Número: ${p.numero}</p>` : ""}
         ${descripcionHTML}
-        <p><b>$${p.precio} ${p.moneda}</b></p>
+        <p>
+          <span class="precio-nuevo">$${p.precio} ${p.moneda}</span>
+        </p>
 
         ${estadoTexto}
 
