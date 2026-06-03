@@ -125,7 +125,7 @@ async function cargarProductos() {
     const descripcionHTML = p.descripcion ? `<p>Descripción: ${p.descripcion}</p>` : '';
 
 // Si se menciona un color, crea un círculo
-    const colorHTML = p.color ? `<span class="color-circulo" estilos="background-color: ${p.color};"></span>` : '';
+    const colorHTML = p.color ? `<span class="color-circulo" css/estilos="background-color: ${p.color};"></span>` : '';
     
     cont.innerHTML += `
       <div class="producto-card">
