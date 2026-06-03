@@ -254,20 +254,29 @@ window.eliminar = async function(id) {
   cargar()
 }
 
+
 // ================= LISTAR =================
 async function cargar() {
-
   const { data: productos } = await supabase.from('productos').select('*')
   const { data: estados } = await supabase.from('estados').select('*')
   const { data: descuentos } = await supabase.from('descuentos').select('*')
 
   lista.innerHTML = ''
 
-  productos.forEach(p => {
+  // función de prioridad
+  function prioridad(p) {
+    const e = estados.find(x => Number(x.producto_id) === Number(p.id));
+    const d = descuentos.find(x => Number(x.producto_id) === Number(p.id));
+    if (d) return 1; // primero descuento
+    if (e && e.estado === "agotado") return 2; // luego agotados
+    return 3; // al final disponibles
+  }
 
+  const ordenados = [...productos].sort((a, b) => prioridad(a) - prioridad(b));
+
+  ordenados.forEach(p => {
     const e = estados.find(x => Number(x.producto_id) === Number(p.id))
     const estado = e ? e.estado : "disponible"
-
     const d = descuentos.find(x => Number(x.producto_id) === Number(p.id))
 
     const estadoColor = estado === "agotado"
@@ -276,35 +285,20 @@ async function cargar() {
 
     lista.innerHTML += `
       <div class="producto">
-
         <img src="${p.imagen || ''}">
-
         <div>
-
           <b>${p.nombre}</b><br>
-
           💰 ${p.precio} ${p.moneda}<br>
-
           ${p.talla ? `👕 ${p.talla}<br>` : ""}
           ${p.numero ? `👟 ${p.numero}<br>` : ""}
           ${p.descripcion ? `📝 ${p.descripcion}<br>` : ""}
-
           ${estadoColor}<br>
-
           ${d ? `🔥 $${d.precio_desc}<br>` : ""}
-
-          <button onclick="toggleEstado(${p.id}, '${estado}')">
-            Cambiar estado
-          </button>
-
+          <button onclick="toggleEstado(${p.id}, '${estado}')">Cambiar estado</button>
           <button onclick="ponerDescuento(${p.id})">💸</button>
-
           ${d ? `<button onclick="quitarDescuento(${p.id})">❌</button>` : ""}
-
           <button onclick="eliminar(${p.id})">🗑</button>
-
         </div>
-
       </div>
     `
   })
