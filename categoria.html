@@ -126,6 +126,8 @@ async function cargarProductos() {
         ${p.talla ? `<p>👕 Talla: ${p.talla}</p>` : ""}
         ${p.numero ? `<p>👟 Número: ${p.numero}</p>` : ""}
 
+        ${descripcionHTML}  <!-- Aquí se agrega solo si existe -->
+
         <p><b>$${p.precio} ${p.moneda}</b></p>
 
         ${estadoTexto}
