@@ -122,9 +122,9 @@ async function cargarProductos() {
       : `<button onclick="comprar('${p.nombre}','${d.precio_desc}','${p.imagen}')">Comprar</button>`
     
  // Solo muestra la descripción si existe
-    const descripcionHTML = p.descripcion ? `<p>Descripción: ${p.descripcion}</p>` : '';
+    const descripcionHTML = p.descripcion ? `<p class="descripcion">Descripción: ${p.descripcion}</p>` : '';
 
-// Si se menciona un color, crea un círculo
+ // Si se menciona un color, crea un círculo
     const colorHTML = p.color ? `<span class="color-circulo" css/estilos="background-color: ${p.color};"></span>` : '';
     
     cont.innerHTML += `
@@ -137,7 +137,7 @@ async function cargarProductos() {
         ${p.talla ? `<p>👕 Talla: ${p.talla}</p>` : ""}
         ${p.numero ? `<p>👟 Número: ${p.numero}</p>` : ""}
         
-       colorHTML{colorHTML}colorHTML{descripcionHTML} <!-- Añade el círculo de color y la descripción -->
+       colorHTML{colorHTML}colorHTML{descripcionHTML} <!-- Correctamente incorporando las variables -->
         
         <p>
           <span class="precio-viejo">$${p.precio}</span>
