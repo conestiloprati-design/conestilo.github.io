@@ -73,6 +73,35 @@ window.comprar = function(nombre, precio, imagen) {
   window.open(url, "_blank")
 }
 
+// ================= FUNCION PARA PROCESAR DESCRIPCIÓN =================
+function procesarDescripcion(texto) {
+  if (!texto) return "";
+
+  const colores = {
+    "rojo": "red",
+    "azul": "blue",
+    "verde": "green",
+    "amarillo": "yellow",
+    "negro": "black",
+    "blanco": "white",
+    "gris": "gray",
+    "naranja": "orange",
+    "violeta": "purple",
+    "marrón": "brown"
+  };
+
+  let resultado = texto;
+
+  Object.keys(colores).forEach(nombre => {
+    const regex = new RegExp(nombre, "gi");
+    resultado = resultado.replace(
+      regex,
+      `<span class="color-circulo" style="background-color:${colores[nombre]};"></span>`
+    );
+  });
+
+  return `<p class="descripcion">${resultado}</p>`;
+}
 
 // ================= CATEGORÍAS =================
 async function cargarCategorias() {
@@ -121,43 +150,9 @@ async function cargarProductos() {
       ? `<button disabled>Agotado</button>`
       : `<button onclick="comprar('${p.nombre}','${d.precio_desc}','${p.imagen}')">Comprar</button>`
 
-    function procesarDescripcion(texto) {
-  if (!texto) return "";
+    // Procesar descripción
+    const descripcionHTML = p.descripcion ? procesarDescripcion(p.descripcion) : ''
 
-  const colores = {
-    "rojo": "red",
-    "azul": "blue",
-    "verde": "green",
-    "amarillo": "yellow",
-    "negro": "black",
-    "blanco": "white",
-    "gris": "gray",
-    "naranja": "orange",
-    "violeta": "purple",
-    "marrón": "brown"
-  };
-
-  let resultado = texto;
-
-  Object.keys(colores).forEach(nombre => {
-    const regex = new RegExp(nombre, "gi");
-    resultado = resultado.replace(
-      regex,
-      `<span class="color-circulo" style="background-color:${colores[nombre]};"></span>`
-    );
-  });
-
-  return `<p class="descripcion">${resultado}</p>`;
-}
-
-    
- // Solo muestra la descripción si existe
-    const descripcionHTML = p.descripcion ? `<p class="descripcion">Descripción: ${p.descripcion}</p>` : '';
-
- // Si se menciona un color, crea un círculo
-   const colorHTML = p.color ? `<span class="color-circulo" style="background-color:${p.color};"></span>` : '';
-
-    
     cont.innerHTML += `
       <div class="producto-card">
 
