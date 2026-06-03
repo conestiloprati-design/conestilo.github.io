@@ -307,6 +307,13 @@ footer {
     font-weight: 700;
 }
 
+.disponible {
+  color: green;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+
 .agotado {
     color: red;
     font-weight: 700;
