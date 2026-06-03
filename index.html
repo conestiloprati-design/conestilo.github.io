@@ -120,7 +120,10 @@ async function cargarProductos() {
     const boton = estado === "agotado"
       ? `<button disabled>Agotado</button>`
       : `<button onclick="comprar('${p.nombre}','${d.precio_desc}','${p.imagen}')">Comprar</button>`
-
+    
+       // Solo muestra la descripción si existe
+    const descripcionHTML = p.descripcion ? `<p>Descripción: ${p.descripcion}</p>` : '';
+    
     cont.innerHTML += `
       <div class="producto-card">
 
@@ -131,7 +134,7 @@ async function cargarProductos() {
         ${p.talla ? `<p>👕 Talla: ${p.talla}</p>` : ""}
         ${p.numero ? `<p>👟 Número: ${p.numero}</p>` : ""}
         
-        <p>Descripción: ${p.descripcion ? p.descripcion : "Sin descripción disponible"}</p>
+         ${descripcionHTML}  <!-- Aquí se agrega solo si existe -->
         
         <p>
           <span class="precio-viejo">$${p.precio}</span>
