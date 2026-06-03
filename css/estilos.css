@@ -288,7 +288,11 @@ footer {
     font-weight: 700;
 }
 
-
+.producto-card p {
+    padding: 0 15px 15px;
+    font-weight: 600;
+    color: inherit; /* hereda el color por defecto */
+}
 
 .precio-viejo {
     text-decoration: line-through;
