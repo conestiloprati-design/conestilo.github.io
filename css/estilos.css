@@ -312,3 +312,17 @@ footer {
 .producto-card button:disabled {
     background: gray;
     cursor: not-allowed;
+
+.descripcion {
+    font-size: 12px; /* Tamaño de letra pequeño */
+    color: black; /* Color del texto */
+}
+
+.color-circulo {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%; /* Crea el círculo */
+    margin-right: 5px; /* Espaciado derecho */
+    vertical-align: middle; /* Alineación vertical */
+}
