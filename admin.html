@@ -253,54 +253,44 @@ window.quitarDescuento = async function(id) {
 
 // ================= Editar Descripcion =================  
 window.editar = async function(id) {
-  // Obtener la información del producto
-  const { data: producto, error: fetchError } = await supabase
-    .from('productos')
-    .select('*')
-    .eq('id', id)
-    .single();
+    // Obtener la información del producto
+    const { data: producto, error: fetchError } = await supabase
+        .from('productos') // Asegúrate de que el nombre de la tabla es correcto
+        .select('*')
+        .eq('id', id)
+        .single();
 
-  if (fetchError) {
-    alert("Error al obtener el producto para editar: " + fetchError.message);
-    console.error(fetchError);
-    return;  // Salir si hay un error
-  }
+    // Manejo de errores al obtener el producto
+    if (fetchError) {
+        alert("Error al obtener el producto para editar: " + fetchError.message);
+        console.error(fetchError);
+        return;  // Salir si hay un error
+    }
 
-  if (!producto) {
-    alert("Producto no encontrado");
-    return;  // Salir si no se encuentra el producto
-  }
+    if (!producto) {
+        alert("Producto no encontrado");
+        return;  // Salir si no se encuentra el producto
+    }
 
-  // Solicitar nueva descripción
-  const nuevaDescripcion = prompt("Editar descripción:", producto.descripcion || "");
-  if (nuevaDescripcion === null) return; // Cancelar si el usuario no ingresa nada
+    // Solicitar nueva descripción
+    const nuevaDescripcion = prompt("Editar descripción:", producto.descripcion || "");
+    if (nuevaDescripcion === null) return; // Cancelar si el usuario no ingresa nada
 
-  // Actualizar la descripción en la base de datos
-  const { error: updateError } = await supabase
-    .from('productos')
-    .update({
-      descripcion: nuevaDescripcion
-    })
-    .eq('id', id);
+    // Actualizar la descripción en la base de datos
+    const { error: updateError } = await supabase
+        .from('productos') // Asegúrate de que el nombre de la tabla es correcto
+        .update({ descripcion: nuevaDescripcion })
+        .eq('id', id);
 
-  if (updateError) {
-    alert("Error al actualizar la descripción: " + updateError.message);
-    console.error(updateError);
-    return; // Salir si hay un error
-  }
+    // Manejo de errores al actualizar
+    if (updateError) {
+        alert("Error al actualizar la descripción: " + updateError.message);
+        console.error(updateError);
+        return; // Salir si hay un error
+    }
 
-  alert("Descripción actualizada correctamente.");
-  cargar(); // Recargar lista de productos para mostrar la nueva descripción
-}
-  
-// ================= ELIMINAR =================
-window.eliminar = async function(id) {
-
-  await supabase.from('productos').delete().eq('id', id)
-  await supabase.from('estados').delete().eq('producto_id', id)
-  await supabase.from('descuentos').delete().eq('producto_id', id)
-
-  cargar()
+    alert("Descripción actualizada correctamente.");
+    cargar(); // Recargar lista de productos para mostrar la nueva descripción
 }
 
 
