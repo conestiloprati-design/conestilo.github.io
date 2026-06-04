@@ -253,35 +253,37 @@ window.quitarDescuento = async function(id) {
 
 // ================= Editar Descripcion =================  
 window.editar = async function(id) {
-
-  const { data: producto } = await supabase
+  const { data: producto, error: fetchError } = await supabase
     .from('productos')
     .select('*')
     .eq('id', id)
-    .single()
+    .single();
 
-  if (!producto) return
+  if (fetchError) {
+    alert("Error al obtener el producto para editar");
+    console.log(fetchError);
+    return;
+  }
 
-  const nuevaDescripcion = prompt(
-    "Editar descripción:",
-    producto.descripcion || ""
-  )
+  if (!producto) return;
 
-  if (nuevaDescripcion === null) return
+  const nuevaDescripcion = prompt("Editar descripción:", producto.descripcion || "");
+  if (nuevaDescripcion === null) return; // Cancelar si el usuario no ingresa nada
 
   const { error } = await supabase
     .from('productos')
     .update({
       descripcion: nuevaDescripcion
     })
-    .eq('id', id)
+    .eq('id', id);
 
   if (error) {
-    alert(error.message)
-    return
+    alert(error.message);
+    return; // Salir si hay un error
   }
 
-  cargar()
+  alert("Descripción actualizada");
+  cargar(); // Llama a cargar nuevamente para actualizar la lista
 }
   
 // ================= ELIMINAR =================
