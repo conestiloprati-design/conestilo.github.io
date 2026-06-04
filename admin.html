@@ -251,6 +251,52 @@ window.quitarDescuento = async function(id) {
   cargar()
 }
 
+// ================= ELIMINAR PRODUCTO =================
+window.eliminar = async function(idProducto) {
+
+  const confirmar = confirm("¿Seguro que deseas eliminar este producto?")
+
+  if (!confirmar) return
+
+  try {
+
+    // Eliminar estados relacionados
+    const { error: errorEstado } = await supabase
+      .from('estados')
+      .delete()
+      .eq('producto_id', idProducto)
+
+    if (errorEstado) throw errorEstado
+
+    // Eliminar descuentos relacionados
+    const { error: errorDescuento } = await supabase
+      .from('descuentos')
+      .delete()
+      .eq('producto_id', idProducto)
+
+    if (errorDescuento) throw errorDescuento
+
+    // Eliminar producto
+    const { error: errorProducto } = await supabase
+      .from('productos')
+      .delete()
+      .eq('id', idProducto)
+
+    if (errorProducto) throw errorProducto
+
+    alert("Producto eliminado correctamente")
+
+    cargar()
+
+  } catch (error) {
+
+    console.error(error)
+
+    alert("Error al eliminar: " + error.message)
+
+  }
+}
+  
 // ================= Editar Descripcion =================  
 window.editar = async function(id) {
     // Obtener la información del producto
