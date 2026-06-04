@@ -252,7 +252,37 @@ window.quitarDescuento = async function(id) {
 }
 
 // ================= Editar Descripcion =================  
+window.editar = async function(id) {
 
+  const { data: producto } = await supabase
+    .from('productos')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (!producto) return
+
+  const nuevaDescripcion = prompt(
+    "Editar descripción:",
+    producto.descripcion || ""
+  )
+
+  if (nuevaDescripcion === null) return
+
+  const { error } = await supabase
+    .from('productos')
+    .update({
+      descripcion: nuevaDescripcion
+    })
+    .eq('id', id)
+
+  if (error) {
+    alert(error.message)
+    return
+  }
+
+  cargar()
+}
   
 // ================= ELIMINAR =================
 window.eliminar = async function(id) {
@@ -307,6 +337,7 @@ async function cargar() {
           <button onclick="toggleEstado(${p.id}, '${estado}')">Cambiar estado</button>
           <button onclick="ponerDescuento(${p.id})">💸</button>
           ${d ? `<button onclick="quitarDescuento(${p.id})">❌</button>` : ""}
+          <button onclick="editar(${p.id})">✏️</button>
           <button onclick="eliminar(${p.id})">🗑</button>
         </div>
       </div>
