@@ -254,6 +254,8 @@ window.quitarDescuento = async function(id) {
 // ================= Editar Descripcion =================  
 window.editar = async function(id) {
     // Obtener la información del producto
+    console.log("ID del producto a editar:", id); // Log para verificar el ID que se está editando
+
     const { data: producto, error: fetchError } = await supabase
         .from('productos') // Asegúrate de que el nombre de la tabla es correcto
         .select('*')
@@ -272,9 +274,13 @@ window.editar = async function(id) {
         return;  // Salir si no se encuentra el producto
     }
 
+    console.log("Producto obtenido:", producto); // Log para verificar el producto obtenido
+
     // Solicitar nueva descripción
     const nuevaDescripcion = prompt("Editar descripción:", producto.descripcion || "");
     if (nuevaDescripcion === null) return; // Cancelar si el usuario no ingresa nada
+
+    console.log("Nueva descripción introducida:", nuevaDescripcion); // Log para verificar la nueva descripción
 
     // Actualizar la descripción en la base de datos
     const { error: updateError } = await supabase
@@ -285,14 +291,13 @@ window.editar = async function(id) {
     // Manejo de errores al actualizar
     if (updateError) {
         alert("Error al actualizar la descripción: " + updateError.message);
-        console.error(updateError);
+        console.error("Error al actualizar:", updateError);
         return; // Salir si hay un error
     }
 
     alert("Descripción actualizada correctamente.");
     cargar(); // Recargar lista de productos para mostrar la nueva descripción
 }
-
 
 // ================= LISTAR =================
 async function cargar() {
