@@ -138,7 +138,7 @@ async function cargarListaCategorias() {
         ${c.imagen ? `<img src="${c.imagen}" alt="${c.nombre}">` : ""}
         <div>
           <b>${c.nombre}</b><br>
-          <button onclick="editarCategoria(${c.id}, '${c.nombre}, '${cat.imagen || ""}')">✏️ Editar</button>
+          <button onclick="editarCategoria(${c.id}, '${c.nombre}','${c.imagen || ""}')">✏️ Editar</button>
           <button onclick="eliminarCategoria(${c.id})">🗑 Eliminar</button>
         </div>
       </div>
