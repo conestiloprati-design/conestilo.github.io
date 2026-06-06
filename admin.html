@@ -129,16 +129,17 @@ async function cargarListaCategorias() {
 
   categorias.forEach(c => {
     contenedor.innerHTML += `
-      <div class="categoria">
-        <b>${c.nombre}</b><br>
-        ${c.imagen ? `<img src="${c.imagen}" width="50"><br>` : ""}
-        <button onclick="editarCategoria(${c.id}, '${c.nombre}')">✏️ Editar</button>
-        <button onclick="eliminarCategoria(${c.id})">🗑 Eliminar</button>
+      <div class="producto">
+        ${c.imagen ? `<img src="${c.imagen}" alt="${c.nombre}">` : ""}
+        <div>
+          <b>${c.nombre}</b><br>
+          <button onclick="editarCategoria(${c.id}, '${c.nombre}')">✏️ Editar</button>
+          <button onclick="eliminarCategoria(${c.id})">🗑 Eliminar</button>
+        </div>
       </div>
     `
   })
 }
- 
 
 // ================= EDITAR CATEGORÍA =================
 window.editarCategoria = async function(id, nombreActual) {
