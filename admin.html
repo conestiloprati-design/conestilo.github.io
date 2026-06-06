@@ -138,7 +138,7 @@ async function cargarListaCategorias() {
         ${c.imagen ? `<img src="${c.imagen}" alt="${c.nombre}">` : ""}
         <div>
           <b>${c.nombre}</b><br>
-          <button onclick="editarCategoria(${c.id}, '${c.nombre}')">✏️ Editar</button>
+          <button onclick="editarCategoria(${c.id}, '${c.nombre}, '${cat.imagen || ""}')">✏️ Editar</button>
           <button onclick="eliminarCategoria(${c.id})">🗑 Eliminar</button>
         </div>
       </div>
@@ -147,13 +147,28 @@ async function cargarListaCategorias() {
 }
 
 // ================= EDITAR CATEGORÍA =================
-window.editarCategoria = async function(id, nombreActual) {
-  const nuevoNombre = prompt("Nuevo nombre de la categoría:", nombreActual)
-  if (!nuevoNombre) return
+window.editarCategoria = async function(id, nombreActual, imagenActual) {
+
+  const nuevoNombre = prompt(
+    "Nuevo nombre de la categoría:",
+    nombreActual
+  )
+
+  if (nuevoNombre === null) return
+
+  const nuevaImagen = prompt(
+    "Nueva URL de la imagen:",
+    imagenActual || ""
+  )
+
+  if (nuevaImagen === null) return
 
   const { error } = await supabase
     .from('categorias')
-    .update({ nombre: nuevoNombre })
+    .update({
+      nombre: nuevoNombre,
+      imagen: nuevaImagen
+    })
     .eq('id', id)
 
   if (error) {
