@@ -138,6 +138,7 @@ async function cargarListaCategorias() {
     `
   })
 }
+ 
 
 // ================= EDITAR CATEGORÍA =================
 window.editarCategoria = async function(id, nombreActual) {
@@ -176,8 +177,7 @@ window.eliminarCategoria = async function(id) {
   alert("Categoría eliminada")
   cargarListaCategorias()
 }
-
-  
+ 
 // ================= AGREGAR PRODUCTO =================
 window.agregar = async function() {
 
@@ -462,7 +462,7 @@ async function cargar() {
 // ================= INIT =================
 cargar()
 cargarCategorias()
-
+cargarListaCategorias() 
 </script>
 
 </body>
