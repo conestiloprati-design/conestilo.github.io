@@ -85,7 +85,8 @@ input, select, button {
 
 <h3>Productos</h3>
 <div id="lista"></div>
-
+<h3>Categorías</h3>
+<div id="lista-categorias"></div>
 </div>
 
 <script type="module">
@@ -114,6 +115,69 @@ async function cargarCategorias() {
   })
 }
 
+// ================= LISTAR CATEGORÍAS =================
+async function cargarListaCategorias() {
+  const { data: categorias, error } = await supabase.from('categorias').select('*')
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  const contenedor = document.getElementById("lista-categorias")
+  contenedor.innerHTML = ""
+
+  categorias.forEach(c => {
+    contenedor.innerHTML += `
+      <div class="categoria">
+        <b>${c.nombre}</b><br>
+        ${c.imagen ? `<img src="${c.imagen}" width="50"><br>` : ""}
+        <button onclick="editarCategoria(${c.id}, '${c.nombre}')">✏️ Editar</button>
+        <button onclick="eliminarCategoria(${c.id})">🗑 Eliminar</button>
+      </div>
+    `
+  })
+}
+
+// ================= EDITAR CATEGORÍA =================
+window.editarCategoria = async function(id, nombreActual) {
+  const nuevoNombre = prompt("Nuevo nombre de la categoría:", nombreActual)
+  if (!nuevoNombre) return
+
+  const { error } = await supabase
+    .from('categorias')
+    .update({ nombre: nuevoNombre })
+    .eq('id', id)
+
+  if (error) {
+    alert("Error al editar: " + error.message)
+    return
+  }
+
+  alert("Categoría actualizada")
+  cargarListaCategorias()
+}
+
+// ================= ELIMINAR CATEGORÍA =================
+window.eliminarCategoria = async function(id) {
+  const confirmar = confirm("¿Seguro que deseas eliminar esta categoría?")
+  if (!confirmar) return
+
+  const { error } = await supabase
+    .from('categorias')
+    .delete()
+    .eq('id', id)
+
+  if (error) {
+    alert("Error al eliminar: " + error.message)
+    return
+  }
+
+  alert("Categoría eliminada")
+  cargarListaCategorias()
+}
+
+  
 // ================= AGREGAR PRODUCTO =================
 window.agregar = async function() {
 
