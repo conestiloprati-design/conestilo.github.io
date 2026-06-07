@@ -86,7 +86,7 @@ function procesarDescripcion(texto) {
     );
   });
 
-  return `<p class="descripcion">${resultado}</p>`;
+  return `<p class="descripcion">📝 ${resultado}</p>`;
 }
   
 // ================= CARGAR PRODUCTOS =================
@@ -154,7 +154,7 @@ async function cargarProductos() {
 
         ${p.talla ? `<p>👕 Talla: ${p.talla}</p>` : ""}
         ${p.numero ? `<p>👟 Número: ${p.numero}</p>` : ""}
-        ${p.descripcion ? `📝 ${p.descripcion}<br>` : ""}
+        ${p.descripcion ? procesarDescripcion(p.descripcion) : ""}
         <p>
           <span class="precio-nuevo">$${p.precio} ${p.moneda}</span>
         </p>
