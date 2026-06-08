@@ -152,7 +152,7 @@ async function cargarProductos() {
 
     // Procesar descripción
     const descripcionHTML = p.descripcion ? procesarDescripcion(p.descripcion) : ''
-
+        
     cont.innerHTML += `
       <div class="producto-card">
 
@@ -162,8 +162,7 @@ async function cargarProductos() {
 
         ${p.talla ? `<p>👕 Talla: ${p.talla}</p>` : ""}
         ${p.numero ? `<p>👟 Número: ${p.numero}</p>` : ""}
-        ${p.descripcion ? `📝 ${p.descripcion}<br>` : ""}
-        
+        ${p.descripcion ? procesarDescripcion(p.descripcion) : ""}
         <p>
           <span class="precio-viejo">$${p.precio}</span>
           <span class="precio-nuevo">$${d.precio_desc} ${p.moneda}</span>
