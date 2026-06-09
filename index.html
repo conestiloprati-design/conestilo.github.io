@@ -22,6 +22,11 @@
   </nav>
 </header>
 
+<!-- Mensaje temporal -->
+<div id="mensaje" style="display: none;">
+  <p>¡Bienvenido a Co'n Estilo! Todo está disponible en casa.</p>
+</div>
+  
 <!-- HERO -->
 <section class="hero">
   <div class="overlay">
@@ -187,6 +192,19 @@ cargarProductos()
 
 </script>
 
+<script>
+  window.onload = function() {
+    // Mostrar el mensaje
+    const mensaje = document.getElementById("mensaje");
+    mensaje.style.display = "block"; // Hacer visible el mensaje
+
+    // Ocultar el mensaje después de 3 segundos (3000 milisegundos)
+    setTimeout(function() {
+      mensaje.style.display = "none"; // Ocultar el mensaje
+    }, 3000);
+  };
+</script>
+  
 <script>
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js')
