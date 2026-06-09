@@ -337,3 +337,19 @@ footer {
     margin-right: 5px; /* Espaciado derecho */
     vertical-align: middle; /* Alineación vertical */
 }
+
+#mensaje {
+  background-color: #f0f8ff; /* Color de fondo */
+  color: #333; /* Color del texto */
+  padding: 20px; /* Espaciado interno */
+  border: 1px solid #ccc; /* Borde */
+  border-radius: 5px; /* Bordes redondeados */
+  text-align: center; /* Centrar texto */
+  position: fixed; /* Para que se fije en la parte superior de la pantalla */
+  top: 20px; /* Distancia desde la parte superior */
+  left: 50%; /* Centrar horizontalmente */
+  transform: translateX(-50%); /* Ajustar para centrar */
+  z-index: 1000; /* Asegurarse de que esté encima de otros elementos */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para mayor énfasis */
+  display: none; /* Ocultar inicialmente */
+}
