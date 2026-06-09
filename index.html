@@ -7,8 +7,10 @@
   
 <link rel="icon" href="https://i.postimg.cc/Gp6QRtKG/IMG-20260520-174004.png">
 <link rel="stylesheet" href="css/estilos.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff4081">
 </head>
-
+  
 <body>
 
 <header>
@@ -185,5 +187,11 @@ cargarProductos()
 
 </script>
 
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js')
+}
+</script>
+  
 </body>
 </html>
