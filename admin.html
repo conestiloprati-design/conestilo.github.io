@@ -407,10 +407,10 @@ window.editar = async function(id) {
     console.log("Producto obtenido:", producto); // Log para verificar el producto obtenido
 
     // Solicitar nueva descripción
-    const nuevaDescripcion = prompt(
-  "Editar descripción (puedes usar \\n para saltos de línea):",
-  producto.descripcion || ""
-);
+    const descripcionTextarea = prompt(
+        "Editar descripción (usa ENTER para nuevas líneas):",
+        producto.descripcion || ""
+    );
     if (nuevaDescripcion === null) return; // Cancelar si el usuario no ingresa nada
 
     console.log("Nueva descripción introducida:", nuevaDescripcion); // Log para verificar la nueva descripción
