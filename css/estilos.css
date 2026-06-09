@@ -324,9 +324,13 @@ footer {
     background: gray;
     cursor: not-allowed;
 }
+
 .descripcion {
-    font-size: 12px; /* Tamaño de letra pequeño */
-    color: black; /* Color del texto */
+    font-size: 13px;
+    color: #444;
+    line-height: 1.4;
+    margin-top: 5px;
+    white-space: pre-line;
 }
 
 .color-circulo {
