@@ -381,13 +381,14 @@ window.eliminar = async function(idProducto) {
   }
 }
   
-// ================= Editar Descripcion =================  
+// ================= Editar Descripcion =================
 window.editar = async function(id) {
+
     // Obtener la información del producto
-    console.log("ID del producto a editar:", id); // Log para verificar el ID que se está editando
+    console.log("ID del producto a editar:", id);
 
     const { data: producto, error: fetchError } = await supabase
-        .from('productos') // Asegúrate de que el nombre de la tabla es correcto
+        .from('productos')
         .select('*')
         .eq('id', id)
         .single();
@@ -396,40 +397,94 @@ window.editar = async function(id) {
     if (fetchError) {
         alert("Error al obtener el producto para editar: " + fetchError.message);
         console.error(fetchError);
-        return;  // Salir si hay un error
+        return;
     }
 
     if (!producto) {
         alert("Producto no encontrado");
-        return;  // Salir si no se encuentra el producto
+        return;
     }
 
-    console.log("Producto obtenido:", producto); // Log para verificar el producto obtenido
+    console.log("Producto obtenido:", producto);
 
-    // Solicitar nueva descripción
-    const nuevaDescripcion = prompt("Editar descripción:", producto.descripcion || "");
-    
-    if (nuevaDescripcion === null) return; // Cancelar si el usuario no ingresa nada
+    // Crear ventana de edición
+    const fondo = document.createElement("div");
+    fondo.style.position = "fixed";
+    fondo.style.top = "0";
+    fondo.style.left = "0";
+    fondo.style.width = "100%";
+    fondo.style.height = "100%";
+    fondo.style.background = "rgba(0,0,0,0.5)";
+    fondo.style.display = "flex";
+    fondo.style.justifyContent = "center";
+    fondo.style.alignItems = "center";
+    fondo.style.zIndex = "9999";
 
-    console.log("Nueva descripción introducida:", nuevaDescripcion); // Log para verificar la nueva descripción
+    fondo.innerHTML = `
+        <div style="
+            background:white;
+            padding:20px;
+            border-radius:10px;
+            width:90%;
+            max-width:500px;
+        ">
+            <h3>Editar descripción</h3>
 
-    // Actualizar la descripción en la base de datos
-    const { error: updateError } = await supabase
-        .from('productos') // Asegúrate de que el nombre de la tabla es correcto
-        .update({ descripcion: nuevaDescripcion })
-        .eq('id', id);
+            <textarea
+                id="nuevaDescripcion"
+                style="width:100%;height:200px;padding:10px;"
+            >${producto.descripcion || ""}</textarea>
 
-    // Manejo de errores al actualizar
-    if (updateError) {
-        alert("Error al actualizar la descripción: " + updateError.message);
-        console.error("Error al actualizar:", updateError);
-        return; // Salir si hay un error
-    }
+            <br><br>
 
-    alert("Descripción actualizada correctamente.");
-    cargar(); // Recargar lista de productos para mostrar la nueva descripción
+            <button id="guardarDescripcion">Guardar</button>
+            <button id="cancelarDescripcion">Cancelar</button>
+        </div>
+    `;
+
+    document.body.appendChild(fondo);
+
+    document.getElementById("cancelarDescripcion").onclick = () => {
+        document.body.removeChild(fondo);
+    };
+
+    document.getElementById("guardarDescripcion").onclick = async () => {
+
+        const nuevaDescripcion =
+            document.getElementById("nuevaDescripcion").value;
+
+        console.log(
+            "Nueva descripción introducida:",
+            nuevaDescripcion
+        );
+
+        // Actualizar la descripción en la base de datos
+        const { error: updateError } = await supabase
+            .from('productos')
+            .update({
+                descripcion: nuevaDescripcion
+            })
+            .eq('id', id);
+
+        // Manejo de errores al actualizar
+        if (updateError) {
+            alert(
+                "Error al actualizar la descripción: " +
+                updateError.message
+            );
+            console.error(
+                "Error al actualizar:",
+                updateError
+            );
+            return;
+        }
+
+        document.body.removeChild(fondo);
+
+        alert("Descripción actualizada correctamente.");
+        cargar();
+    };
 }
-
 // ================= LISTAR =================
 async function cargar() {
   const { data: productos } = await supabase.from('productos').select('*')
