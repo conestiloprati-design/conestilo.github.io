@@ -87,18 +87,36 @@ const supabase = createClient(
 
 
 // ================= WHATSAPP =================
-window.comprar = function(nombre, precio, imagen) {
+window.comprar = function(nombre, precio, imagen, talla, numero) {
 
-  const telefono = "5358231944"
+  const telefono = "5358231944";
 
-  const mensaje = `Hola, quiero comprar:
-  ${nombre}
-  $${precio}
-  ${imagen}`
+  let mensaje = `🛍️ Hola, quiero comprar:
+━━━━━━━━━━━━━━━
 
-  const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`
+👕 Producto: ${nombre}
+💰 Precio: $${precio}`;
 
-  window.open(url, "_blank")
+  // 👕 talla opcional
+  if (talla) {
+    mensaje += `\n👕 Talla: ${talla}`;
+  }
+
+  // 👟 número opcional
+  if (numero) {
+    mensaje += `\n👟 Número: ${numero}`;
+  }
+
+  // 🖼️ imagen siempre al final
+  if (imagen) {
+    mensaje += `\n\n🖼️ Imagen del producto:\n${imagen}`;
+  }
+
+  mensaje += `\n━━━━━━━━━━━━━━━`;
+
+  const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+
+  window.open(url, "_blank");
 }
 
 // ================= FUNCION PARA PROCESAR DESCRIPCIÓN =================
