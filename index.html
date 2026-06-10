@@ -63,6 +63,18 @@
     <p class="copy">© 2026 Co'n Estilo - Todos los derechos reservados</p>
 </footer>
 
+<div id="installBanner">
+  <img src="https://i.postimg.cc/Gp6QRtKG/IMG-20260520-174004.png" />
+
+  <div class="text">
+    <b>Instalar Con'Estilo</b>
+    <small>Accede más rápido a la tienda</small>
+  </div>
+
+  <button id="installBtn">Instalar</button>
+  <button id="closeBanner">✖</button>
+</div>
+  
 <script type="module">
 
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
@@ -212,6 +224,48 @@ cargarProductos()
       mensaje.style.display = "none"; // Ocultar el mensaje
     }, 5000);
   };
+</script>
+
+<script>
+let deferredPrompt;
+
+const banner = document.getElementById("installBanner");
+const installBtn = document.getElementById("installBtn");
+const closeBanner = document.getElementById("closeBanner");
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+
+  deferredPrompt = e;
+
+  banner.style.display = "flex";
+
+  setTimeout(() => {
+    banner.classList.add("show");
+  }, 100);
+});
+
+installBtn.addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+
+  deferredPrompt.prompt();
+
+  await deferredPrompt.userChoice;
+
+  banner.classList.remove("show");
+
+  setTimeout(() => {
+    banner.style.display = "none";
+  }, 300);
+});
+
+closeBanner.addEventListener("click", () => {
+  banner.classList.remove("show");
+
+  setTimeout(() => {
+    banner.style.display = "none";
+  }, 300);
+});
 </script>
   
 <script>
