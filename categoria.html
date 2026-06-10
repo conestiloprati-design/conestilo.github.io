@@ -49,7 +49,7 @@ window.comprar = function(nombre, precio, imagen, talla, numero) {
 
   const telefono = "5358231944";
 
-  let mensaje = `🛍️ *NUEVO PEDIDO*
+  let mensaje = `🛍️  `Hola, quiero comprar:
 ━━━━━━━━━━━━━━━
 
 👕 Producto: ${nombre}
@@ -164,7 +164,7 @@ async function cargarProductos() {
 
     const boton = estado === "agotado"
       ? `<button disabled>Agotado</button>`
-      : `<button onclick="comprar('${p.nombre}','${p.precio}','${p.imagen}')">Comprar</button>`
+      : `<button onclick="comprar('${p.nombre}','${p.precio}','${p.imagen}','${p.talla || ""}','${p.numero || ""}')">Comprar</button>`
 
     // procesar descripción
     const descripcionHTML = p.descripcion ? procesarDescripcion(p.descripcion) : ''
