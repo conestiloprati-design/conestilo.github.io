@@ -1,0 +1,16 @@
+{
+  "name": "Co'n Estilo Admin",
+  "short_name": "Admin",
+  "start_url": "./admin.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2196f3",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/Gp6QRtKG/IMG-20260520-174004.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
