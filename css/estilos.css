@@ -369,3 +369,55 @@ footer {
     to { opacity: 0; }
 }
 
+#installBanner {
+  position: fixed;
+  bottom: 15px;
+  left: 15px;
+  right: 15px;
+
+  display: none;
+  align-items: center;
+  gap: 10px;
+
+  background: rgba(0,0,0,0.85);
+  color: white;
+
+  padding: 10px;
+  border-radius: 14px;
+  z-index: 99999;
+
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+
+#installBanner.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+#installBanner img {
+  width: 45px;
+  height: 45px;
+  border-radius: 10px;
+}
+
+#installBanner .text {
+  flex: 1;
+}
+
+#installBtn {
+  background: #ff4081;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+#closeBanner {
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 8px;
+  border-radius: 8px;
+}
