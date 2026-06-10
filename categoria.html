@@ -45,13 +45,12 @@ const supabase = createClient(
 
 
 // ================= WHATSAPP =================
-window.comprar = function(nombre, talla, precio, imagen) {
+window.comprar = function(nombre, precio, imagen) {
 
   const telefono = "5358231944"
 
-  const mensaje = `🛍️ Hola, quiero comprar:%0A
+  const mensaje = `🛍️ Hola, quiero comprar:
 Producto: ${nombre},
-Tala: ${talla},
 Precio: $${precio},
 Imagen: ${imagen}`
 
