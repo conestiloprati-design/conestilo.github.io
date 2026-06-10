@@ -179,6 +179,18 @@ async function cargarProductos() {
 cargarProductos()
 
 </script>
+  <script>
+  window.onload = function() {
+    // Mostrar el mensaje
+    const mensaje = document.getElementById("mensaje");
+    mensaje.style.display = "block"; // Hacer visible el mensaje
+
+    // Ocultar el mensaje después de 5 segundos (5000 milisegundos)
+    setTimeout(function() {
+      mensaje.style.display = "none"; // Ocultar el mensaje
+    }, 5000);
+  };
+</script>
 
 </body>
 </html>
