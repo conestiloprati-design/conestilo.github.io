@@ -6,6 +6,8 @@
 <title>Admin</title>
   
 <link rel="icon" href="https://i.postimg.cc/Gp6QRtKG/IMG-20260520-174004.png">
+<link rel="manifest" href="admin-manifest.json">
+<meta name="theme-color" content="#2196f3">
 <style>
 body {
   font-family: Arial;
@@ -539,6 +541,12 @@ async function cargar() {
 cargar()
 cargarCategorias()
 cargarListaCategorias() 
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./admin-sw.js');
+}
 </script>
 
 </body>
