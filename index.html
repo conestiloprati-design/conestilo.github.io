@@ -233,24 +233,39 @@ const banner = document.getElementById("installBanner");
 const installBtn = document.getElementById("installBtn");
 const closeBanner = document.getElementById("closeBanner");
 
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
+// ❌ No mostrar si ya está instalada
+if (window.matchMedia('(display-mode: standalone)').matches) {
+  console.log("App ya instalada");
+} else {
 
-  deferredPrompt = e;
+  window.addEventListener("beforeinstallprompt", (e) => {
 
-  banner.style.display = "flex";
+    // ✅ Solo Android
+    const esAndroid = /Android/i.test(navigator.userAgent);
 
-  setTimeout(() => {
-    banner.classList.add("show");
-  }, 100);
-});
+    if (!esAndroid) return;
 
+    e.preventDefault();
+    deferredPrompt = e;
+
+    banner.style.display = "flex";
+
+    setTimeout(() => {
+      banner.classList.add("show");
+    }, 100);
+  });
+
+}
+
+// INSTALAR APP
 installBtn.addEventListener("click", async () => {
   if (!deferredPrompt) return;
 
   deferredPrompt.prompt();
 
   await deferredPrompt.userChoice;
+
+  deferredPrompt = null;
 
   banner.classList.remove("show");
 
@@ -259,6 +274,7 @@ installBtn.addEventListener("click", async () => {
   }, 300);
 });
 
+// CERRAR BANNER
 closeBanner.addEventListener("click", () => {
   banner.classList.remove("show");
 
