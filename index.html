@@ -195,7 +195,7 @@ async function cargarProductos() {
 
     const boton = estado === "agotado"
       ? `<button disabled>Agotado</button>`
-      : `<button onclick="comprar('${p.nombre}','${d.precio_desc}','${p.imagen}')">Comprar</button>`
+       : `<button onclick="comprar('${p.nombre}','${p.precio}','${p.imagen}','${p.talla || ""}','${p.numero || ""}')">Comprar</button>`
 
     // Procesar descripción
     const descripcionHTML = p.descripcion ? procesarDescripcion(p.descripcion) : ''
