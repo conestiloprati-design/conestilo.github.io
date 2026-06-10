@@ -258,6 +258,7 @@ if (window.matchMedia('(display-mode: standalone)').matches) {
 } else {
 
   window.addEventListener("beforeinstallprompt", (e) => {
+    if (window.matchMedia('(display-mode: standalone)').matches) return;
 
     // ✅ Solo Android
     const esAndroid = /Android/i.test(navigator.userAgent);
@@ -267,10 +268,6 @@ if (window.matchMedia('(display-mode: standalone)').matches) {
     e.preventDefault();
     deferredPrompt = e;
 
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-  return;
-}
-
     banner.style.display = "flex";
 
     setTimeout(() => {
@@ -279,6 +276,16 @@ if (window.matchMedia('(display-mode: standalone)').matches) {
   });
 
 }
+
+// 🔥 AUTO CIERRE DEL BANNER
+setTimeout(() => {
+  banner.classList.remove("show");
+
+  setTimeout(() => {
+    banner.style.display = "none";
+  }, 300);
+
+}, 8000); // ⏱ 8 segundos
 
 // INSTALAR APP
 installBtn.addEventListener("click", async () => {
