@@ -618,6 +618,40 @@ cargar()
 cargarCategorias()
 cargarListaCategorias() 
 
+async function cargarVisitasHoy() {
+
+  const hoy = new Date().toISOString().split("T")[0];
+
+  const { data, error } = await supabase
+    .from("visitas")
+    .select("created_at");
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  const total = data.filter(v =>
+    v.created_at.split("T")[0] === hoy
+  ).length;
+
+  document.getElementById("visitasHoy").innerText = total;
+}
+
+cargarVisitasHoy(); 
+
+window.toggleHistorial = async function () {
+
+  const div = document.getElementById("historial");
+
+  if (div.style.display === "none") {
+    div.style.display = "block";
+    await cargarHistorial();
+  } else {
+    div.style.display = "none";
+  }
+};
+
 // ================= HISTORIAL DE VISITAS =================
 async function cargarHistorial() {
 
