@@ -596,7 +596,45 @@ async function cargar() {
 cargar()
 cargarCategorias()
 cargarListaCategorias() 
-</script>
+</scrip>
+
+// ================= HISTORIAL DE VISITAS =================
+async function cargarHistorial() {
+
+  const { data, error } = await supabase
+    .from("visitas")
+    .select("created_at");
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  const resumen = {};
+
+  data.forEach(v => {
+    const dia = v.created_at.split("T")[0];
+
+    if (!resumen[dia]) {
+      resumen[dia] = 0;
+    }
+
+    resumen[dia]++;
+  });
+
+  let html = "";
+
+  Object.keys(resumen)
+    .sort()
+    .reverse()
+    .forEach(dia => {
+      html += `<p>📅 ${dia} → 👀 ${resumen[dia]} visitas</p>`;
+    });
+
+  document.getElementById("historial").innerHTML = html;
+}
+
+cargarHistorial();
 
 <script>
 if ('serviceWorker' in navigator) {
