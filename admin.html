@@ -102,6 +102,22 @@ button:hover {
   flex-wrap: wrap;
   gap: 10px;
 }
+
+  .btn-historial {
+  margin-top: 5px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-historial:hover {
+  background: #3e8e41;
+}
+  
 </style>
 </head>
 
@@ -113,12 +129,17 @@ button:hover {
     <h2>Admin Con'Estilo</h2>
 
     <div class="visitas-box">
-      👀 hoy: <span id="visitasHoy">0</span>
-    </div>
+  👀 hoy: <span id="visitasHoy">0</span>
   </div>
+
+   <button class="btn-historial" onclick="toggleHistorial()">
+  📊 Ver historial
+   </button> 
 
   <hr>
 
+<div id="historial" style="display:none; margin-top:10px;"></div>  
+    
 <h3>Agregar Producto</h3>
 
 <input id="nombre" placeholder="Nombre">
