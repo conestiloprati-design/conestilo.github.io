@@ -103,10 +103,64 @@ button:hover {
 <body>
 
 <div class="panel">
-  
-  <h2>Admin Con'Estilo</h2>
 
-  <hr>  
+  <div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:15px;
+    flex-wrap:wrap;
+  ">
+
+    <h2 style="margin:0;">Admin Con'Estilo</h2>
+
+    <div style="text-align:right;">
+
+      <!-- Visitas del día -->
+      <div id="visitasHoy" style="
+        background:rgba(255,255,255,0.35);
+        backdrop-filter:blur(8px);
+        padding:8px 12px;
+        border-radius:10px;
+        font-weight:bold;
+        margin-bottom:5px;
+        min-width:120px;
+      ">
+        👁️ Hoy: 0
+      </div>
+
+      <!-- Historial desplegable -->
+      <details style="
+        background:rgba(255,255,255,0.35);
+        backdrop-filter:blur(8px);
+        border-radius:10px;
+        padding:6px 10px;
+        font-size:14px;
+      ">
+
+        <summary style="
+          cursor:pointer;
+          user-select:none;
+          font-weight:bold;
+        ">
+          📅 Historial
+        </summary>
+
+        <div id="historialVisitas" style="
+          max-height:180px;
+          overflow-y:auto;
+          margin-top:8px;
+          min-width:180px;
+        ">
+        </div>
+
+      </details>
+
+    </div>
+
+  </div>
+
+  <hr>
     
 <h3>Agregar Producto</h3>
 
@@ -581,10 +635,50 @@ async function cargar() {
   })
 }
 
+// ================= VISITAS =================
+async function cargarVisitas() {
+
+  const hoy = new Date().toISOString().split("T")[0];
+
+  const { data, error } = await supabase
+    .from("visitas")
+    .select("*")
+    .order("fecha", { ascending: false });
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  const visitaHoy = data.find(v => v.fecha === hoy);
+
+  document.getElementById("visitasHoy").innerHTML =
+    `👁️ Hoy: ${visitaHoy ? visitaHoy.total : 0}`;
+
+  let html = "";
+
+  data.forEach(v => {
+    html += `
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        padding:4px 0;
+        border-bottom:1px solid rgba(0,0,0,.1);
+      ">
+        <span>${v.fecha}</span>
+        <b>${v.total}</b>
+      </div>
+    `;
+  });
+
+  document.getElementById("historialVisitas").innerHTML = html;
+}
+  
 // ================= INIT =================
 cargar()
 cargarCategorias()
 cargarListaCategorias()
+cargarVisitas()
   
 </script>
   
