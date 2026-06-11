@@ -595,31 +595,9 @@ async function cargar() {
 // ================= INIT =================
 cargar()
 cargarCategorias()
-cargarListaCategorias() 
-
-async function cargarVisitasHoy() {
-
-  const hoy = new Date().toISOString().split("T")[0];
-
-  const { data, error } = await supabase
-    .from("visitas")
-    .select("created_at");
-
-  if (error) {
-    console.log(error);
-    return;
-  }
-
-  const total = data.filter(v =>
-    v.created_at.split("T")[0] === hoy
-  ).length;
-
-  document.getElementById("visitasHoy").innerText = total;
-}
-
-cargarVisitasHoy(); 
-
+cargarListaCategorias()
 </script>
+  
 <script>
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./admin-sw.js');
