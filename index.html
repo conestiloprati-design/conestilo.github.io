@@ -231,29 +231,33 @@ cargarProductos()
   // ================= REGISTRAR VISITAS =================
 async function registrarVisita() {
   try {
-    const hoy = new Date().toISOString().split("T")[0];
+    const ahora = Date.now();
 
-    // evita contar varias veces por el mismo usuario en el mismo día
-    const ya = localStorage.getItem("visita_" + hoy);
-    if (ya) return;
+    // ⏱️ tiempo mínimo entre visitas (ej: 10 minutos)
+    const COOLDOWN = 10 * 60 * 1000; // 10 min
+
+    const lastVisit = localStorage.getItem("ultima_visita");
+
+    if (lastVisit && (ahora - parseInt(lastVisit)) < COOLDOWN) {
+      return; // todavía está en cooldown → NO cuenta
+    }
 
     const { error } = await supabase
       .from("visitas")
-      .insert([{ created_at: hoy }]);
+      .insert([{}]);
 
     if (error) {
-      console.log("Error guardando visita:", error);
+      console.log("Error guardando visita:", error.message);
       return;
     }
 
-    localStorage.setItem("visita_" + hoy, "1");
+    // guardar nueva hora de visita
+    localStorage.setItem("ultima_visita", ahora.toString());
 
   } catch (err) {
     console.log(err);
   }
 }
-
-registrarVisita();
 
 </script>
 
