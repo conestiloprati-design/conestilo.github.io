@@ -228,6 +228,32 @@ async function cargarProductos() {
 // ================= INIT =================
 cargarCategorias()
 cargarProductos()
+  // ================= REGISTRAR VISITAS =================
+async function registrarVisita() {
+  try {
+    const hoy = new Date().toISOString().split("T")[0];
+
+    // evita contar varias veces por el mismo usuario en el mismo día
+    const ya = localStorage.getItem("visita_" + hoy);
+    if (ya) return;
+
+    const { error } = await supabase
+      .from("visitas")
+      .insert([{ created_at: hoy }]);
+
+    if (error) {
+      console.log("Error guardando visita:", error);
+      return;
+    }
+
+    localStorage.setItem("visita_" + hoy, "1");
+
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+registrarVisita();
 
 </script>
 
