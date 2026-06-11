@@ -595,6 +595,35 @@ async function cargar() {
 cargar()
 cargarCategorias()
 cargarListaCategorias()
+
+async function registrarVisita() {
+  try {
+    const hoy = new Date().toISOString().split("T")[0];
+
+    // evitar contar varias veces el mismo día
+    const ya = localStorage.getItem("visita_" + hoy);
+    if (ya) return;
+
+    // guardar visita en supabase
+    const { error } = await supabase
+      .from("visitas")
+      .insert([{ created_at: hoy }]);
+
+    if (error) {
+      console.log("Error registrando visita:", error);
+      return;
+    }
+
+    // marcar en local
+    localStorage.setItem("visita_" + hoy, "1");
+
+  } catch (err) {
+    console.log("Error general:", err);
+  }
+}
+
+registrarVisita();
+  
 </script>
   
 <script>
