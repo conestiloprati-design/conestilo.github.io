@@ -228,18 +228,17 @@ async function cargarProductos() {
 // ================= INIT =================
 cargarCategorias()
 cargarProductos()
-  // ================= REGISTRAR VISITAS =================
+// ================= REGISTRAR VISITAS =================
 async function registrarVisita() {
   try {
     const ahora = Date.now();
 
-    // ⏱️ tiempo mínimo entre visitas (ej: 10 minutos)
-    const COOLDOWN = 10 * 60 * 1000; // 10 min
+    const COOLDOWN = 10 * 60 * 1000; // 10 minutos
 
     const lastVisit = localStorage.getItem("ultima_visita");
 
     if (lastVisit && (ahora - parseInt(lastVisit)) < COOLDOWN) {
-      return; // todavía está en cooldown → NO cuenta
+      return;
     }
 
     const { error } = await supabase
@@ -251,13 +250,13 @@ async function registrarVisita() {
       return;
     }
 
-    // guardar nueva hora de visita
     localStorage.setItem("ultima_visita", ahora.toString());
 
   } catch (err) {
     console.log(err);
   }
 }
+
 registrarVisita();
 
 </script>
