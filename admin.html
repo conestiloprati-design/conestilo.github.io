@@ -647,13 +647,20 @@ async function cargarVisitas() {
     return;
   }
 
-  const hoy = new Date().toISOString().split("T")[0];
+  // 👉 HOY en hora de Cuba (NO UTC)
+  const hoy = new Date().toLocaleDateString("sv-SE", {
+    timeZone: "America/Havana"
+  });
 
   const conteoPorDia = {};
 
   data.forEach(v => {
 
-    const fecha = v.created_at.split("T")[0];
+    // 👉 convertir cada registro a hora de Cuba
+    const fecha = new Date(v.created_at)
+      .toLocaleDateString("sv-SE", {
+        timeZone: "America/Havana"
+      });
 
     conteoPorDia[fecha] =
       (conteoPorDia[fecha] || 0) + 1;
@@ -666,20 +673,15 @@ async function cargarVisitas() {
   let html = "";
 
   Object.entries(conteoPorDia)
-    .sort((a,b) => b[0].localeCompare(a[0]))
-    .forEach(([fecha,total]) => {
+    .sort((a, b) => b[0].localeCompare(a[0]))
+    .forEach(([fecha, total]) => {
 
       html += `
-      <div style="
-        display:flex;
-        justify-content:space-between;
-        padding:4px 0;
-      ">
-        <span>${fecha}</span>
-        <b>${total}</b>
-      </div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;">
+          <span>${fecha}</span>
+          <b>${total}</b>
+        </div>
       `;
-
     });
 
   document.getElementById("historialVisitas").innerHTML = html;
