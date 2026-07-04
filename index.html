@@ -73,6 +73,11 @@
   <button id="installBtn">Instalar</button>
   <button id="closeBanner">✖</button>
 </div>
+  <!-- Visor de imágenes -->
+<div id="visorImagen" class="visor-imagen">
+    <span id="cerrarImagen">&times;</span>
+    <img id="imagenGrande">
+</div>
   
 <script type="module">
 
@@ -342,6 +347,44 @@ closeBanner.addEventListener("click", () => {
   }, 300);
 });
 </script>
+  
+<script>
+const visor = document.getElementById("visorImagen");
+const imagenGrande = document.getElementById("imagenGrande");
+const cerrar = document.getElementById("cerrarImagen");
+
+let visorAbierto = false;
+
+window.abrirImagen = function(src){
+    imagenGrande.src = src;
+    visor.style.display = "flex";
+    document.body.style.overflow = "hidden";
+
+    visorAbierto = true;
+
+    history.pushState({visor:true}, "");
+}
+
+function cerrarImagen(){
+    visor.style.display = "none";
+    document.body.style.overflow = "";
+    visorAbierto = false;
+}
+
+cerrar.onclick = () => history.back();
+
+visor.onclick = function(e){
+    if(e.target === visor){
+        history.back();
+    }
+}
+
+window.addEventListener("popstate", function(){
+    if(visorAbierto){
+        cerrarImagen();
+    }
+});
+  </script>
   
 <script>
 if ('serviceWorker' in navigator) {
