@@ -73,6 +73,11 @@
   <button id="installBtn">Instalar</button>
   <button id="closeBanner">✖</button>
 </div>
+  <!-- Visor de imágenes -->
+<div id="visorImagen" class="visor-imagen">
+    <span class="cerrar-imagen">&times;</span>
+    <img id="imagenGrande" src="" alt="Imagen">
+</div>
   
 <script type="module">
 
@@ -228,6 +233,46 @@ async function cargarProductos() {
 // ================= INIT =================
 cargarCategorias()
 cargarProductos()
+  
+  const visor = document.getElementById("visorImagen");
+const imgGrande = document.getElementById("imagenGrande");
+const cerrar = document.querySelector(".cerrar-imagen");
+
+let visorAbierto = false;
+
+function abrirImagen(src){
+    imgGrande.src = src;
+    visor.style.display = "flex";
+    document.body.style.overflow = "hidden";
+
+    visorAbierto = true;
+
+    history.pushState({visor:true}, "");
+}
+
+function cerrarImagen(){
+    visor.style.display = "none";
+    imgGrande.src = "";
+    document.body.style.overflow = "";
+
+    visorAbierto = false;
+}
+
+cerrar.onclick = function(){
+    history.back();
+};
+
+visor.onclick = function(e){
+    if(e.target === visor){
+        history.back();
+    }
+};
+
+window.addEventListener("popstate", function(){
+    if(visorAbierto){
+        cerrarImagen();
+    }
+});
 // ================= REGISTRAR VISITAS =================
 async function registrarVisita() {
   try {
