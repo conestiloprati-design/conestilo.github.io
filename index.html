@@ -208,7 +208,7 @@ async function cargarProductos() {
     cont.innerHTML += `
       <div class="producto-card">
 
-        <img src="${p.imagen}">
+        <img src="${p.imagen}" onclick="abrirImagen('${p.imagen}')" style="cursor:zoom-in;">
 
         <h3>${p.nombre}</h3>
 
